@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Feed from './feed/Feed';
+import Feed from './components/Feed/Feed';
 
 const App: React.FC = () => {
   return (

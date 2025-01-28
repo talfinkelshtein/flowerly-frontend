@@ -1,7 +1,7 @@
 import React from 'react';
 import './Feed.css';
 import usePosts from '../../custom_hooks/usePosts';
-import PostCard from '../post/PostCard';
+import PostCard from '../PostCard/PostCard';
 import { Post } from '../../types/Post';
 
 const Feed: React.FC = () => {
