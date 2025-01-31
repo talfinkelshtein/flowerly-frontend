@@ -7,39 +7,36 @@ interface FormData {
   confirmPassword: string;
 }
 
-interface RegisterFormProps {
+interface LoginFormProps {
   setMessage: (message: string | null) => void;
 }
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PASSWORD_MIN_LENGTH = 6;
-
-export default function RegisterForm({ setMessage }: RegisterFormProps) {
+export default function LoginForm({ setMessage }: LoginFormProps) {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormData>();
 
-  const registerUser: SubmitHandler<FormData> = async (FormData) => {
+  const loginUser: SubmitHandler<FormData> = async (FormData) => {
     try {
-      const response = await fetch('http://localhost:3000/auth/register', {
+      const response = await fetch('http://localhost:3000/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(FormData),
       });
-      setMessage(response.status === 200 ? `Your account has been created.` : `Account already exists!`);
+      console.log(response);
+      setMessage(response.status === 200 ? `Successfully logged in!.` : `Wrong username or password!`);
     } catch (error) {
-      console.error('Error registering user:', error);
+      console.error('Error logining user:', error);
       return { success: false, message: 'Registration failed' };
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(registerUser)}>
+    <form onSubmit={handleSubmit(loginUser)}>
       <Box mb={2}>
         <TextField
           fullWidth
@@ -47,7 +44,6 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
           type="email"
           {...register('email', {
             required: 'Email is required',
-            pattern: { value: EMAIL_PATTERN, message: 'Invalid email format' },
           })}
           error={!!errors.email}
           helperText={errors.email?.message}
@@ -60,30 +56,13 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
           type="password"
           {...register('password', {
             required: 'Password is required',
-            minLength: {
-              value: PASSWORD_MIN_LENGTH,
-              message: `Password must be at least ${PASSWORD_MIN_LENGTH} characters`,
-            },
           })}
           error={!!errors.password}
           helperText={errors.password?.message}
         />
       </Box>
-      <Box mb={2}>
-        <TextField
-          fullWidth
-          label="Confirm Password"
-          type="password"
-          {...register('confirmPassword', {
-            required: 'Please confirm your password',
-            validate: (value) => value === watch('password') || 'Passwords do not match',
-          })}
-          error={!!errors.confirmPassword}
-          helperText={errors.confirmPassword?.message}
-        />
-      </Box>
       <Button type="submit" variant="contained" color="primary" fullWidth>
-        Register
+        Login
       </Button>
     </form>
   );
