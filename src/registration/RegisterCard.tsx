@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@mui/material';
 import { Typography, Box } from '@mui/material';
 import RegisterForm from './RegisterForm.tsx';
-import Message from './Message.tsx';
+import Message from './RegisterMessage.tsx';
 
 export default function Register() {
   const [message, setMessage] = useState<string | null>(null);
