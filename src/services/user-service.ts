@@ -23,10 +23,12 @@ export const loginUser = async (email: string, password: string) => {
       },
       body: JSON.stringify({ email, password }),
     });
-    const { accessToken, refreshToken, _id} = await response.json();
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
-    localStorage.setItem('userId', _id);
+    const { accessToken, refreshToken, _id } = await response.json();
+    if (response.status === 200) {
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('userId', _id);
+    }
     return response;
   } catch (error) {
     console.error('Error registering user:', error);
