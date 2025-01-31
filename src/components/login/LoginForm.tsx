@@ -1,5 +1,6 @@
 import { Box, Button, TextField } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { loginUser } from '../../services/user-service';
 
 interface FormData {
   email: string;
@@ -18,20 +19,11 @@ export default function LoginForm({ setMessage }: LoginFormProps) {
     formState: { errors },
   } = useForm<FormData>();
 
-  const loginUser: SubmitHandler<FormData> = async (FormData) => {
+  const onFormSubmit: SubmitHandler<FormData> = async (FormData) => {
     try {
-      const response = await fetch('http://localhost:3000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(FormData),
-      });
-      const data = await response.json();      
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-      localStorage.setItem("userId", data._id);
-      setMessage(response.status === 200 ? `Successfully logged in!.` : `Wrong username or password!`);
+      const userData = await loginUser(FormData.email, FormData.password)
+      setMessage(userData.status === 200 ? `Successfully logged in!.` : `Wrong username or password!`);
+      // TODO: add login functions
     } catch (error) {
       console.error('Error logining user:', error);
       return { success: false, message: 'Registration failed' };
@@ -39,7 +31,7 @@ export default function LoginForm({ setMessage }: LoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(loginUser)}>
+    <form onSubmit={handleSubmit(onFormSubmit)}>
       <Box mb={2}>
         <TextField
           fullWidth

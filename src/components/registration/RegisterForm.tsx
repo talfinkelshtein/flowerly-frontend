@@ -1,5 +1,7 @@
 import { Box, Button, TextField } from '@mui/material';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { registerUser } from '../../services/user-service';
 
 interface FormData {
   email: string;
@@ -22,24 +24,26 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
     formState: { errors },
   } = useForm<FormData>();
 
-  const registerUser: SubmitHandler<FormData> = async (FormData) => {
+  const onFormSubmit: SubmitHandler<FormData> = async (FormData) => {
     try {
-      const response = await fetch('http://localhost:3000/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(FormData),
-      });
-      setMessage(response.status === 200 ? `Your account has been created.` : `Account already exists!`);
-    } catch (error) {
-      console.error('Error registering user:', error);
+      const res = await registerUser(FormData.email, FormData.password);
+      setMessage(res.status === 200 ? `Your account has been created.` : `Account already exists!`);
+    } catch (err) {
+      console.error(`Error - ${err}`);
       return { success: false, message: 'Registration failed' };
     }
   };
 
+  const onGoogleSuccess = (credentialResponse: CredentialResponse) => {
+    console.log(credentialResponse);
+  };
+
+  const googleErrorMessage = () => {
+    console.log('Google error');
+  };
+
   return (
-    <form onSubmit={handleSubmit(registerUser)}>
+    <form onSubmit={handleSubmit(onFormSubmit)}>
       <Box mb={2}>
         <TextField
           fullWidth
@@ -85,6 +89,7 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
       <Button type="submit" variant="contained" color="primary" fullWidth>
         Register
       </Button>
+      <GoogleLogin onSuccess={onGoogleSuccess} onError={googleErrorMessage}></GoogleLogin>
     </form>
   );
 }
