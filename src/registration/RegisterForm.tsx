@@ -1,8 +1,7 @@
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Button, TextField, Box } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 interface FormData {
-  name: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -23,21 +22,24 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    setMessage(`Welcome, ${data.name}! Your account has been created.`);
+  const onSubmit: SubmitHandler<FormData> = async (FormData) => {
+    try {
+      const response = await fetch('http://localhost:3000/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(FormData),
+      });
+      setMessage(response.status === 200 ? `Your account has been created.` : `Account already exists!`);
+    } catch (error) {
+      console.error('Error registering user:', error);
+      return { success: false, message: 'Registration failed' };
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box mb={2}>
-        <TextField
-          fullWidth
-          label="Full Name"
-          {...register('name', { required: 'Name is required' })}
-          error={!!errors.name}
-          helperText={errors.name?.message}
-        />
-      </Box>
       <Box mb={2}>
         <TextField
           fullWidth
