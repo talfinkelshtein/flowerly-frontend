@@ -1,21 +1,17 @@
 import React from 'react';
-import './App.css';
-import Feed from './components/Feed/Feed';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage/HomePage';
+import Navbar from './components/NavBar/NavBar';
 
 const App: React.FC = () => {
-  return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Flowerly</h1>
-      </header>
-      <main className="app-content">
-        <Feed />
-      </main>
-      <footer className="app-footer">
-        <p>&copy; 2025 Flowerly App. All rights reserved.</p>
-      </footer>
-    </div>
-  );
+    return (
+        <Router>
+            <Navbar />
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+            </Routes>
+        </Router>
+    );
 };
 
 export default App;
