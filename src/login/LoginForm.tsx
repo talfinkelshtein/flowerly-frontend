@@ -27,7 +27,10 @@ export default function LoginForm({ setMessage }: LoginFormProps) {
         },
         body: JSON.stringify(FormData),
       });
-      console.log(response);
+      const data = await response.json();      
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem("userId", data._id);
       setMessage(response.status === 200 ? `Successfully logged in!.` : `Wrong username or password!`);
     } catch (error) {
       console.error('Error logining user:', error);
