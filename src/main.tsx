@@ -1,10 +1,12 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import Register from "./registration/Register";
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import Register from './registration/Register';
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Register></Register>
+    <div style={{ display: 'flex', flexDirection: 'column'}}>
+      <Register></Register>
+    </div>
   </StrictMode>
 );
