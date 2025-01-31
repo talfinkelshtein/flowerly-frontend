@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Navbar.css';
+import styles from './Navbar.module.css';
 
 const Navbar: React.FC = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false); 
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
     const handleLogout = () => {
         setIsLoggedIn(false);
     };
 
     return (
-        <nav className="navbar">
-            <h2 className="logo"><Link to="/">Flowerly App</Link></h2>
-            <ul>
+        <nav className={styles.navbar}>
+            <h2 className={styles.logo}><Link to="/">Flowerly App</Link></h2>
+            <ul className={styles.navList}>
                 <li><Link to="/">Home</Link></li>
 
                 {isLoggedIn ? (
                     <>
                         <li><Link to="/upload">Upload Post</Link></li>
-                        <li><button className="logout-btn" onClick={handleLogout}>Logout</button></li>
+                        <li><button className={styles.logoutBtn} onClick={handleLogout}>Logout</button></li>
                     </>
                 ) : (
                     <>

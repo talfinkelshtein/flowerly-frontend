@@ -1,26 +1,30 @@
-import { useEffect, useState } from 'react';
-import postService, { CanceledError } from '../services/post-service';
-import { Post } from '../types/Post';
+import { useEffect, useState } from "react";
+import { PostService } from "../services/PostService";
+import { Post } from "../types/Post";
 
 const usePosts = () => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
     useEffect(() => {
-        console.log('useEffect');
-        setIsLoading(true);
-        const { request, abort } = postService.getAllPosts()
-        request.then((response) => {
-            setPosts(response.data);
-            setIsLoading(false);
-        }).catch((error) => {
-            if (!(error instanceof CanceledError)) {
-                setError(error.message);
+        const fetchPosts = async () => {
+            setIsLoading(true);
+            try {
+                const data = await PostService.getAllPosts();
+                setPosts(data);
+            } catch (error) {
+                setError("Failed to load posts");
+                console.error("Error fetching posts:", error);
+            } finally {
                 setIsLoading(false);
             }
-        });
-        return abort;
-    }, [])
-    return { posts, setPosts, error, setError, isLoading, setIsLoading }
-}
+        };
+
+        fetchPosts();
+    }, []);
+
+    return { posts, setPosts, error, setError, isLoading, setIsLoading };
+};
+
 export default usePosts;

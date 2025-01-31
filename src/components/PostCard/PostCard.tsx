@@ -1,5 +1,5 @@
 import React from 'react';
-import './PostCard.css';
+import styles from './PostCard.module.css';
 import rose from '../../assets/rose.jpg'; 
 import { Post } from '../../types/Post';
 
@@ -11,13 +11,13 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onViewComments }) => {
     return (
-        <div className="post-card">
-            <img src={rose} alt="Post Image" className="post-image" />
-            <div className="post-content">
+        <div className={styles.postCard}>
+            <img src={rose} alt="Post" className={styles.postImage} />
+            <div className={styles.postContent}>
                 <p>{post.content}</p>
                 <small>Posted by: {post.owner}</small>
             </div>
-            <div className="post-actions">
+            <div className={styles.postActions}>
                 <button onClick={() => onLike(post.id)}>Like ({post.likes})</button>
                 <button onClick={() => onViewComments(post.id)}>
                     Comments ({post.commentsCount})
