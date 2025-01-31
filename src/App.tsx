@@ -1,17 +1,19 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Navbar from './components/NavBar/Navbar';
 import HomePage from './pages/HomePage/HomePage';
-import Navbar from './components/NavBar/NavBar';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
 
 const App: React.FC = () => {
-    return (
-        <Router>
-            <Navbar />
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-            </Routes>
-        </Router>
-    );
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
+    </Router>
+  );
 };
 
 export default App;
