@@ -1,0 +1,68 @@
+import { Box, Button, TextField } from '@mui/material';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { loginUser, setUserAcessToken } from '../../services/user-service';
+import './LoginForm.css';
+
+interface FormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface LoginFormProps {
+  setMessage: (message: string | null) => void;
+}
+
+export default function LoginForm({ setMessage }: LoginFormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  const onFormSubmit: SubmitHandler<FormData> = async (FormData) => {
+    try {
+      const userData = await loginUser(FormData.email, FormData.password);
+      setUserAcessToken(userData);
+      setMessage(userData.status === 200 ? `Successfully logged in!.` : `Wrong username or password!`);
+      // TODO: add login functions
+    } catch (error) {
+      console.error('Error logining user:', error);
+      return { success: false, message: 'Registration failed' };
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onFormSubmit)} className="login-form">
+      <Box mb={2}>
+        <TextField
+          label="Email"
+          type="email"
+          fullWidth
+          {...register('email', {
+            required: 'Email is required',
+          })}
+          error={!!errors.email}
+          helperText={errors.email?.message}
+        />
+      </Box>
+
+      <Box mb={2}>
+        <TextField
+          label="Password"
+          type="password"
+          fullWidth
+          {...register('password', {
+            required: 'Password is required',
+          })}
+          error={!!errors.password}
+          helperText={errors.password?.message}
+        />
+      </Box>
+
+      <Button type="submit" variant="contained" color="primary">
+        Login
+      </Button>
+    </form>
+  );
+}
