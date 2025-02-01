@@ -2,6 +2,7 @@ import { Box, Button, TextField } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { googleSignin, registerUser, setUserAcessToken } from '../../services/user-service';
+import './RegisterForm.css';
 
 interface FormData {
   email: string;
@@ -50,10 +51,9 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)}>
+    <form onSubmit={handleSubmit(onFormSubmit)} className="register-form">
       <Box mb={2}>
         <TextField
-          fullWidth
           label="Email"
           type="email"
           {...register('email', {
@@ -64,9 +64,9 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
           helperText={errors.email?.message}
         />
       </Box>
+
       <Box mb={2}>
         <TextField
-          fullWidth
           label="Password"
           type="password"
           {...register('password', {
@@ -80,9 +80,9 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
           helperText={errors.password?.message}
         />
       </Box>
+
       <Box mb={2}>
         <TextField
-          fullWidth
           label="Confirm Password"
           type="password"
           {...register('confirmPassword', {
@@ -93,10 +93,16 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
           helperText={errors.confirmPassword?.message}
         />
       </Box>
-      <Button type="submit" variant="contained" color="primary" fullWidth>
+
+      <Button type="submit" variant="contained" color="primary">
         Register
       </Button>
-      <GoogleLogin onSuccess={onGoogleSuccess} onError={googleErrorMessage}></GoogleLogin>
+
+      <div className="google-login-container">
+        <div>
+          <GoogleLogin onSuccess={onGoogleSuccess} onError={googleErrorMessage} />
+        </div>
+      </div>
     </form>
   );
 }
