@@ -1,5 +1,5 @@
 import React from 'react';
-import './Feed.css';
+import styles from './Feed.module.css';
 import usePosts from '../../custom_hooks/usePosts';
 import PostCard from '../PostCard/PostCard';
 import { Post } from '../../types/Post';
@@ -16,15 +16,14 @@ const Feed: React.FC = () => {
     };
 
     return (
-        <div className="feed-container">
-
+        <div className={styles.feedContainer}>
             {isLoading && <p>Loading posts...</p>}
             {error && <p>Error: {error}</p>}
             {!isLoading && !error && posts.length === 0 && (
                 <p>No posts available.</p>
             )}
 
-            <div className="posts-flexbox">
+            <div className={styles.postsFlexbox}>
                 {posts.map((post: Post) => (
                     <PostCard
                         key={post.id}

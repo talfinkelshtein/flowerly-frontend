@@ -1,0 +1,21 @@
+.feedContainer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.postsFlexbox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.postCard {
+    flex: 0 1 calc(25% - 20px);
+    max-width: calc(25% - 20px);
+    min-width: 250px;
+}
+
+

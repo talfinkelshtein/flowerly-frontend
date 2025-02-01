@@ -1,10 +1,12 @@
 .navbar {
+    width: 100%; /* Ensures navbar spans full width */
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #ffd1dc;
     padding: 10px 20px;
 }
+
 
 .logo a {
     text-decoration: none;
