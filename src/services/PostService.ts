@@ -6,7 +6,7 @@ export const PostService = {
     uploadPost: async (post: NewPost, image: File): Promise<Post> => {
         const formData = new FormData();
         formData.append("image", image);
-
+        formData.append("plantType", post.plantType);
         formData.append("content", post.content);
         formData.append("owner", post.owner);
 

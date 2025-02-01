@@ -14,6 +14,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onViewComments }) => 
         <div className={styles.postCard}>
             <img src={`${config.API_BASE_URL}${post.imagePath}`} alt="Post" className="post-image" />
             <div className={styles.postContent}>
+                <h3 className={styles.plantType}>{post.plantType}</h3>
                 <p>{post.content}</p>
                 <small>Posted by: {post.owner}</small>
             </div>

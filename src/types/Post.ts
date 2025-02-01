@@ -1,6 +1,6 @@
 export interface Post {
     id: string;
-    plantType?: string;
+    plantType: string;
     content: string;
     owner: string;
     likes: number;
