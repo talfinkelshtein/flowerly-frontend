@@ -1,6 +1,7 @@
 import { Box, Button, TextField } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { loginUser, setUserAcessToken } from '../../services/user-service';
+import './LoginForm.css';
 
 interface FormData {
   email: string;
@@ -32,12 +33,12 @@ export default function LoginForm({ setMessage }: LoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)}>
+    <form onSubmit={handleSubmit(onFormSubmit)} className="login-form">
       <Box mb={2}>
         <TextField
-          fullWidth
           label="Email"
           type="email"
+          fullWidth
           {...register('email', {
             required: 'Email is required',
           })}
@@ -45,11 +46,12 @@ export default function LoginForm({ setMessage }: LoginFormProps) {
           helperText={errors.email?.message}
         />
       </Box>
+
       <Box mb={2}>
         <TextField
-          fullWidth
           label="Password"
           type="password"
+          fullWidth
           {...register('password', {
             required: 'Password is required',
           })}
@@ -57,7 +59,8 @@ export default function LoginForm({ setMessage }: LoginFormProps) {
           helperText={errors.password?.message}
         />
       </Box>
-      <Button type="submit" variant="contained" color="primary" fullWidth>
+
+      <Button type="submit" variant="contained" color="primary">
         Login
       </Button>
     </form>
