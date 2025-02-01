@@ -11,9 +11,6 @@ const Feed: React.FC = () => {
         console.log(`Liked post with ID: ${postId}`);
     };
 
-    const handleViewComments = (postId: string) => {
-        console.log(`View comments for post with ID: ${postId}`);
-    };
 
     return (
         <div className={styles.feedContainer}>
@@ -29,7 +26,6 @@ const Feed: React.FC = () => {
                         key={post.id}
                         post={post}
                         onLike={handleLike}
-                        onViewComments={handleViewComments}
                     />
                 ))}
             </div>
