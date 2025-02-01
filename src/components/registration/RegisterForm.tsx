@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { registerUser } from '../../services/user-service';
+import { googleSignin, registerUser, setUserAcessToken } from '../../services/user-service';
 
 interface FormData {
   email: string;
@@ -34,8 +34,15 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
     }
   };
 
-  const onGoogleSuccess = (credentialResponse: CredentialResponse) => {
-    console.log(credentialResponse);
+  const onGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    try {
+      const response = await googleSignin(credentialResponse);
+      setUserAcessToken(response);
+      setMessage(response.status === 200 ? `Logged in via Google.` : `couldn't login!`);
+    } catch (err) {
+      console.error(`Error - ${err}`);
+      return { success: false, message: 'Login via Google failed' };
+    }
   };
 
   const googleErrorMessage = () => {

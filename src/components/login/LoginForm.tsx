@@ -1,6 +1,6 @@
 import { Box, Button, TextField } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { loginUser } from '../../services/user-service';
+import { loginUser, setUserAcessToken } from '../../services/user-service';
 
 interface FormData {
   email: string;
@@ -21,7 +21,8 @@ export default function LoginForm({ setMessage }: LoginFormProps) {
 
   const onFormSubmit: SubmitHandler<FormData> = async (FormData) => {
     try {
-      const userData = await loginUser(FormData.email, FormData.password)
+      const userData = await loginUser(FormData.email, FormData.password);
+      setUserAcessToken(userData);
       setMessage(userData.status === 200 ? `Successfully logged in!.` : `Wrong username or password!`);
       // TODO: add login functions
     } catch (error) {
