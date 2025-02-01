@@ -3,20 +3,18 @@ import { Post, NewPost } from "../types/Post";
 import { config } from "../config";
 
 export const PostService = {
-    uploadImage: async (image: File): Promise<string> => {
+    uploadPost: async (post: NewPost, image: File): Promise<Post> => {
         const formData = new FormData();
         formData.append("image", image);
 
-        const response = await axios.post(`${config.API_BASE_URL}/upload-image`, formData, {
+        formData.append("content", post.content);
+        formData.append("owner", post.owner);
+
+        const response = await axios.post(`${config.API_BASE_URL}/posts`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
 
-        return response.data.imageUrl;
-    },
-
-    uploadPost: async (post: NewPost): Promise<Post> => {
-        const response = await axios.post(`${config.API_BASE_URL}/posts`, post);
-        return response.data; 
+        return response.data;
     },
 
     getAllPosts: async (): Promise<Post[]> => {

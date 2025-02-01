@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './PostCard.module.css';
-import rose from '../../assets/rose.jpg'; 
 import { Post } from '../../types/Post';
+import { config } from '../../config';
 
 interface PostCardProps {
     post: Post;
@@ -12,7 +12,7 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onViewComments }) => {
     return (
         <div className={styles.postCard}>
-            <img src={rose} alt="Post" className={styles.postImage} />
+            <img src={`${config.API_BASE_URL}${post.imagePath}`} alt="Post" className="post-image" />
             <div className={styles.postContent}>
                 <p>{post.content}</p>
                 <small>Posted by: {post.owner}</small>

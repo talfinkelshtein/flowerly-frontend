@@ -4,16 +4,8 @@ import { PostService } from "../../services/PostService";
 import { useNavigate } from "react-router-dom";
 
 const exampleFlowers = [
-    "Rose",
-    "Sunflower",
-    "Tulip",
-    "Daisy",
-    "Lavender",
-    "Orchid",
-    "Lily",
-    "Peony",
-    "Marigold",
-    "Jasmine"
+    "Rose", "Sunflower", "Tulip", "Daisy", "Lavender",
+    "Orchid", "Lily", "Peony", "Marigold", "Jasmine"
 ];
 
 const UploadPostPage: React.FC = () => {
@@ -24,13 +16,11 @@ const UploadPostPage: React.FC = () => {
     const navigate = useNavigate();
 
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
+        if (event.target.files?.[0]) {
             const file = event.target.files[0];
             setImage(file);
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result as string);
-            };
+            reader.onloadend = () => setPreview(reader.result as string);
             reader.readAsDataURL(file);
         }
     };
@@ -44,16 +34,10 @@ const UploadPostPage: React.FC = () => {
         }
 
         try {
-            // const imageUrl = await PostService.uploadImage(image); 
-            await PostService.uploadPost({
-                plantType,
-                content: description,
-                owner: "CurrentUser", 
-                likes: 0,
-                commentsCount: 0,
-                // imageUrl,
-            });
-
+            await PostService.uploadPost(
+                { content: description, owner: "CurrentUser", plantType },
+                image
+            );
             navigate("/");
         } catch (error) {
             console.error("Error uploading post:", error);
@@ -66,11 +50,7 @@ const UploadPostPage: React.FC = () => {
             <form onSubmit={handleSubmit} className={styles.uploadForm}>
 
                 <label className={styles.label}>Plant Type</label>
-                <select
-                    value={plantType}
-                    onChange={(e) => setPlantType(e.target.value)}
-                    className={styles.input}
-                >
+                <select value={plantType} onChange={(e) => setPlantType(e.target.value)} className={styles.input}>
                     <option value="">Select a flower...</option>
                     {exampleFlowers.map((flower) => (
                         <option key={flower} value={flower}>{flower}</option>
@@ -86,7 +66,7 @@ const UploadPostPage: React.FC = () => {
                 />
 
                 <label className={styles.label}>Upload Image</label>
-                <input type="file" accept="image/*" onChange={handleImageChange} />
+                <input type="file" accept="image/*" onChange={handleImageChange} className={styles.fileInput} />
                 {preview && <img src={preview} alt="Preview" className={styles.imagePreview} />}
 
                 <button type="submit" className={styles.submitButton}>Upload</button>
