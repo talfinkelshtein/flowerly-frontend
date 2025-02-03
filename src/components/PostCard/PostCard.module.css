@@ -1,42 +1,117 @@
 .postCard {
-    background: white;
+    position: relative;
+    background: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 280px;
+    transition: 0.3s;
+}
+
+.postCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.postHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-weight: bold;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.owner {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Ensure three dots menu button is always visible */
+.menuButton {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    color: black;
+    position: relative;
+    display: block; /* Ensures it's always visible */
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Style for the dropdown menu */
+.menuDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+    min-width: 120px;
+}
+
+.menuDropdown.show {
+    display: flex;
+}
+
+.menuItem {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    background: white;
+    text-align: left;
+    width: 100%;
+}
+
+.menuItem:hover {
+    background: #f1f1f1;
 }
 
 .postImage {
     width: 100%;
-    height: 180px;
+    height: 200px;
     object-fit: cover;
     border-radius: 8px;
+    margin-bottom: 10px;
 }
 
 .postContent {
-    margin-top: 10px;
     text-align: center;
+    padding: 10px 0;
+}
+
+.plantType {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
 }
 
 .postActions {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 12px;
 }
 
-.postActions button {
-    padding: 8px 12px;
+button, .commentButton {
+    background: none;
     border: none;
-    background-color: #ff4081;
-    color: white;
-    border-radius: 4px;
     cursor: pointer;
+    font-size: 14px;
+    color: #007bff;
+    transition: 0.3s;
 }
 
-.postActions button:hover {
-    background-color: #e91e63;
+button:hover, .commentButton:hover {
+    color: #0056b3;
 }

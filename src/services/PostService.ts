@@ -35,5 +35,22 @@ export const PostService = {
     getPostById: async (postId: string): Promise<Post> => {
         const response = await axios.get(`${config.API_BASE_URL}/posts/${postId}`);
         return response.data;
+    },
+
+    updatePost: async (postId: string, updatedPost: Partial<Post>, image?: File): Promise<Post> => {
+        const formData = new FormData();
+        if (image) formData.append("image", image);
+        if (updatedPost.plantType) formData.append("plantType", updatedPost.plantType);
+        if (updatedPost.content) formData.append("content", updatedPost.content);
+
+        const response = await axios.put(`${config.API_BASE_URL}/posts/${postId}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        return response.data;
+    },
+
+    deletePost: async (postId: string): Promise<void> => {
+        await axios.delete(`${config.API_BASE_URL}/posts/${postId}`);
     }
 };
