@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PostService } from "../../services/PostService";
-import { CommentService, Comment } from "../../services/CommentService";
+import useComments from "../../custom_hooks/useComments";
 import { Post } from "../../types/Post";
 import styles from "./PostPage.module.css";
 import { config } from "../../config";
@@ -9,37 +9,40 @@ import { config } from "../../config";
 const PostPage: React.FC = () => {
     const { postId } = useParams<{ postId: string }>();
     const [post, setPost] = useState<Post | null>(null);
-    const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
+    const { comments, setComments, isLoading, error, addComment } = useComments(postId!);
 
     useEffect(() => {
-        const fetchPostAndComments = async () => {
+        if (!postId) return;
+
+        const fetchPost = async () => {
             try {
-                const postData = await PostService.getPostById(postId!);
+                const postData = await PostService.getPostById(postId);
                 setPost(postData);
-                const commentsData = await CommentService.getCommentsByPost(postId!);
-                setComments(commentsData);
-            } catch (error) {
-                console.error("Failed to load post:", error);
+            } catch (err) {
+                console.error("Failed to load post:", err);
             }
         };
-        fetchPostAndComments();
+
+        fetchPost();
     }, [postId]);
 
     const handleAddComment = async () => {
         if (!newComment.trim()) return;
         try {
-            const comment = await CommentService.addComment(postId!, "CurrentUser", newComment);
+            const comment = await addComment(newComment, "CurrentUser");
             setComments([...comments, comment]);
             setNewComment("");
 
-            setPost((prevPost) => prevPost ? { ...prevPost, commentsCount: prevPost.commentsCount + 1 } : prevPost);
+            setPost((prev) => prev ? { ...prev, commentsCount: prev.commentsCount + 1 } : prev);
         } catch (error) {
             console.error("Failed to add comment:", error);
         }
     };
 
-    if (!post) return <p>Loading...</p>;
+    if (!post) return <p>Loading post...</p>;
+    if (isLoading) return <p>Loading comments...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
         <div className={styles.postPage}>
@@ -57,8 +60,8 @@ const PostPage: React.FC = () => {
                         {comments.length === 0 ? (
                             <p>No comments yet.</p>
                         ) : (
-                            comments.map((comment, index) => (
-                                <p key={index}><strong>{comment.owner}:</strong> {comment.content}</p>
+                            comments.map((comment) => (
+                                <p key={comment.id}><strong>{comment.owner}:</strong> {comment.content}</p>
                             ))
                         )}
                     </div>

@@ -1,12 +1,6 @@
 import axios from "axios";
 import { config } from "../config";
-
-export interface Comment {
-    id?: string;
-    content: string;
-    owner: string;
-    postId: string;
-}
+import { Comment } from "../types/Comment";
 
 export const CommentService = {
     getCommentsByPost: async (postId: string): Promise<Comment[]> => {
