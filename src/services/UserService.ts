@@ -48,11 +48,15 @@ export const loginUser = async (email: string, password: string) => {
   }
 };
 
-export const setUserAcessToken = async (response: Response) => {
+export const setUserAccessToken = async (response: Response) => {
   const { accessToken, refreshToken, _id } = await response.json();
   if (response.status === 200) {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('userId', _id);
   }
+};
+
+export const getUserAccessToken = async () => {
+  return  localStorage.getItem('accessToken');
 };
