@@ -1,8 +1,9 @@
 import { Box, Button, TextField } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { googleSignin, registerUser, setUserAccessToken } from '../../services/UserService';
+import { registerUser } from '../../services/UserService';
 import './RegisterForm.css';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface FormData {
   email: string;
@@ -18,6 +19,8 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
 
 export default function RegisterForm({ setMessage }: RegisterFormProps) {
+  const { googleLogin } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -25,29 +28,34 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onFormSubmit: SubmitHandler<FormData> = async (FormData) => {
+  const onFormSubmit: SubmitHandler<FormData> = async (formData) => {
     try {
-      const res = await registerUser(FormData.email, FormData.password);
+      const res = await registerUser(formData.email, formData.password);
       setMessage(res.status === 200 ? `Your account has been created.` : `Account already exists!`);
     } catch (err) {
-      console.error(`Error - ${err}`);
-      return { success: false, message: 'Registration failed' };
+      console.error('Registration error:', err);
+      setMessage('Registration failed');
     }
   };
 
   const onGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
-      const response = await googleSignin(credentialResponse);
-      setUserAccessToken(response);
-      setMessage(response.status === 200 ? `Logged in via Google.` : `couldn't login!`);
-    } catch (err) {
-      console.error(`Error - ${err}`);
-      return { success: false, message: 'Login via Google failed' };
+      const response = await googleLogin(credentialResponse);
+
+      if (response.status === 200) {
+        setMessage('Logged in via Google!');
+      } else {
+        const errorMessage = await response.json();
+        setMessage(errorMessage.message || "Couldn't login!");
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      setMessage('Login via Google failed');
     }
   };
 
   const googleErrorMessage = () => {
-    console.log('Google error');
+    console.log('Google login error');
   };
 
   return (
