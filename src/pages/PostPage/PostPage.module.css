@@ -1,0 +1,82 @@
+.postPage {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 20px;
+}
+
+.postContainer {
+    display: flex;
+    flex-direction: row;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    width: 100%;
+}
+
+.postContent {
+    flex: 2;
+    padding-right: 20px;
+}
+
+.postImage {
+    width: 100%;
+    max-width: 500px;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.commentsSection {
+    flex: 1;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.commentList {
+    padding: 8px 0;
+}
+
+.commentList p {
+    background: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 6px 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.commentInput {
+    display: flex;
+    margin-top: 12px;
+}
+
+.commentInput input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.commentInput button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-left: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.commentInput button:hover {
+    background: #0056b3;
+}
