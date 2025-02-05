@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { registerUser } from '../../services/UserService';
 import './RegisterForm.css';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface FormData {
   email: string;
@@ -20,6 +21,7 @@ const PASSWORD_MIN_LENGTH = 6;
 
 export default function RegisterForm({ setMessage }: RegisterFormProps) {
   const { googleLogin } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -44,6 +46,7 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
 
       if (response.status === 200) {
         setMessage('Logged in via Google!');
+        navigate('/');
       } else {
         const errorMessage = await response.json();
         setMessage(errorMessage.message || "Couldn't login!");
