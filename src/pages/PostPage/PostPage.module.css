@@ -1,67 +1,90 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
 .postPage {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    gap: 20px;
+    align-items: center;
+    width: 100vw;
+    height: calc(100vh - 60px);
+    padding: 10px;
+    background-color: #f4f4f4;
 }
 
 .postContainer {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 16px;
-    width: 100%;
+    width: 85%;
+    max-width: 700px;
+    height: 90%; 
+    padding: 15px;
+    overflow: hidden;
 }
 
 .postContent {
-    flex: 2;
-    padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-grow: 1;
+    width: 100%;
+    max-height: 50%;
+    overflow: hidden;
 }
 
 .postImage {
     width: 100%;
-    max-width: 500px;
-    max-height: 400px;
+    max-width: 90%;
+    max-height: 300px; 
     object-fit: cover;
     border-radius: 8px;
 }
 
 .commentsSection {
-    flex: 1;
+    width: 100%;
+    flex-grow: 1;
     background: #f9f9f9;
     border-radius: 8px;
-    padding: 16px;
+    padding: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+    max-height: 50%;
 }
 
 .commentList {
-    padding: 8px 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 100%;
+    padding-bottom: 8px;
 }
 
 .commentList p {
     background: #fff;
-    padding: 10px;
+    padding: 8px;
     border-radius: 6px;
-    margin: 6px 0;
+    margin: 4px 0;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .commentInput {
     display: flex;
-    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+    flex-shrink: 0;
 }
 
 .commentInput input {
     flex: 1;
-    padding: 10px;
+    padding: 8px;
     border-radius: 6px;
     border: 1px solid #ccc;
 }
@@ -70,8 +93,8 @@
     background: #007bff;
     color: white;
     border: none;
-    padding: 10px 15px;
-    margin-left: 8px;
+    padding: 8px 12px;
+    margin-left: 6px;
     border-radius: 6px;
     cursor: pointer;
     transition: 0.3s;

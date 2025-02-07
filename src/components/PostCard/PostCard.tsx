@@ -1,9 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import styles from "./PostCard.module.css";
+import { Card, CardContent, CardMedia, Typography, IconButton, Menu, MenuItem, Dialog, DialogActions, DialogTitle, Button } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { Post } from "../../types/Post";
 import { config } from "../../config";
 import { PostService } from "../../services/PostService";
+import styles from "./PostCard.module.css";
 
 interface PostCardProps {
     post: Post;
@@ -12,66 +18,66 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onDelete }) => {
-    const [menuOpen, setMenuOpen] = useState(false);
-    const menuRef = useRef<HTMLDivElement>(null);
+    const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+    const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this post?")) {
-            await PostService.deletePost(post.id);
-            onDelete(post.id);
-        }
+    const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setMenuAnchor(event.currentTarget);
     };
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setMenuOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
+    const handleMenuClose = () => {
+        setMenuAnchor(null);
+    };
+
+    const handleDelete = useCallback(async () => {
+        setConfirmOpen(false);
+        await PostService.deletePost(post.id);
+        onDelete(post.id);
+    }, [post.id, onDelete]);
 
     return (
-        <div className={styles.postCard}>
-            <div className={styles.postHeader}>
-                <span className={styles.owner}>{post.owner}</span>
-                <button
-                    className={styles.menuButton}
-                    onClick={() => setMenuOpen(!menuOpen)}
-                >
-                    ⋮
-                </button>
-                <div
-                    ref={menuRef}
-                    className={`${styles.menuDropdown} ${menuOpen ? styles.show : ""}`}
-                >
-                    <Link to={`/edit/${post.id}`} className={styles.menuItem}>
-                        ✏ Edit
-                    </Link>
-                    <button onClick={handleDelete} className={`${styles.menuItem} ${styles.deleteButton}`}>
-                        🗑 Delete
-                    </button>
-                </div>
-            </div>
-            <img src={`${config.API_BASE_URL}${post.imagePath}`} alt="Post" className={styles.postImage} />
-            <div className={styles.postContent}>
-                <h3 className={styles.plantType}>{post.plantType}</h3>
-                <p>{post.content}</p>
-            </div>
-            <div className={styles.postActions}>
-                <button className={styles.actionButton} onClick={() => onLike(post.id)}>
-                    👍 Like ({post.likes ?? 0})
-                </button>
-                <Link to={`/post/${post.id}`} className={styles.commentButton}>
-                    💬 Comment ({post.commentsCount ?? 0})
-                </Link>
-            </div>
+        <Card className={styles.postCard}>
+            <CardContent className={styles.postHeader}>
+                <Typography variant="subtitle2" className={styles.owner}>{post.owner}</Typography>
+                <IconButton onClick={handleMenuOpen} className={styles.menuButton}>
+                    <MoreVertIcon />
+                </IconButton>
+                <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleMenuClose}>
+                    <MenuItem component={Link} to={`/edit/${post.id}`} onClick={handleMenuClose}>
+                        <EditIcon fontSize="small" sx={{ mr: 1 }} /> Edit
+                    </MenuItem>
+                    <MenuItem onClick={() => { handleMenuClose(); setConfirmOpen(true); }}>
+                        <DeleteIcon fontSize="small" sx={{ mr: 1, color: "red" }} /> Delete
+                    </MenuItem>
+                </Menu>
+            </CardContent>
 
+            <CardMedia component="img" height="200" image={`${config.API_BASE_URL}${post.imagePath}`} alt="Post Image" className={styles.postImage} />
 
-        </div>
+            <CardContent className={styles.postContent}>
+                <Typography variant="subtitle1" className={styles.plantType}>{post.plantType}</Typography>
+                <Typography variant="body2">{post.content}</Typography>
+            </CardContent>
+
+            <CardContent className={styles.postActions}>
+                <IconButton className={styles.actionButton} onClick={() => onLike(post.id)}>
+                    <ThumbUpIcon fontSize="small" sx={{ mr: 0.5 }} /> 
+                    <Typography variant="body2">{post.likes ?? 0}</Typography>
+                </IconButton>
+                <IconButton className={styles.commentButton} component={Link} to={`/post/${post.id}`}>
+                    <ChatBubbleOutlineIcon fontSize="small" sx={{ mr: 0.5 }} />
+                    <Typography variant="body2">{post.commentsCount ?? 0}</Typography>
+                </IconButton>
+            </CardContent>
+
+            <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+                <DialogTitle>Are you sure you want to delete this post?</DialogTitle>
+                <DialogActions>
+                    <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+                    <Button onClick={handleDelete} color="error" variant="contained">Delete</Button>
+                </DialogActions>
+            </Dialog>
+        </Card>
     );
 };
 

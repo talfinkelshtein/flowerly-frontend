@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import {
+    Card,
+    CardContent,
+    CardMedia,
+    Typography,
+    TextField,
+    Button,
+    CircularProgress,
+    Paper,
+    List,
+    ListItem,
+    ListItemText,
+    Divider,
+    Box
+} from "@mui/material";
 import { PostService } from "../../services/PostService";
 import useComments from "../../custom_hooks/useComments";
 import { Post } from "../../types/Post";
-import styles from "./PostPage.module.css";
 import { config } from "../../config";
+import styles from "./PostPage.module.css";
 
 const PostPage: React.FC = () => {
     const { postId } = useParams<{ postId: string }>();
@@ -33,51 +48,75 @@ const PostPage: React.FC = () => {
             const comment = await addComment(newComment, "CurrentUser");
             setComments([...comments, comment]);
             setNewComment("");
-
             setPost((prev) => prev ? { ...prev, commentsCount: prev.commentsCount + 1 } : prev);
         } catch (error) {
             console.error("Failed to add comment:", error);
         }
     };
 
-    if (!post) return <p>Loading post...</p>;
-    if (isLoading) return <p>Loading comments...</p>;
-    if (error) return <p>{error}</p>;
+    if (!post) return <CircularProgress sx={{ display: "block", margin: "auto", mt: 4 }} />;
+    if (isLoading) return <CircularProgress sx={{ display: "block", margin: "auto", mt: 4 }} />;
+    if (error) return <Typography color="error">{error}</Typography>;
 
     return (
-        <div className={styles.postPage}>
-            <div className={styles.postContainer}>
-                <div className={styles.postContent}>
-                    <img src={`${config.API_BASE_URL}${post.imagePath}`} alt="Post" className={styles.postImage} />
-                    <h3>{post.plantType}</h3>
-                    <p>{post.content}</p>
-                    <small>Posted by: {post.owner}</small>
-                </div>
+        <Box className={styles.postPage}>
+            <Card className={styles.postContainer}>
+                <CardMedia
+                    component="img"
+                    image={`${config.API_BASE_URL}${post.imagePath}`}
+                    alt="Post"
+                    className={styles.postImage}
+                />
+                <CardContent className={styles.postContent}>
+                    <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1 }}>
+                        {post.plantType}
+                    </Typography>
+                    <Typography variant="body1">{post.content}</Typography>
+                    <Typography variant="caption" color="textSecondary">
+                        Posted by: {post.owner}
+                    </Typography>
+                </CardContent>
+            </Card>
 
-                <div className={styles.commentsSection}>
-                    <h4>Comments</h4>
-                    <div className={styles.commentList}>
-                        {comments.length === 0 ? (
-                            <p>No comments yet.</p>
-                        ) : (
-                            comments.map((comment) => (
-                                <p key={comment.id}><strong>{comment.owner}:</strong> {comment.content}</p>
-                            ))
-                        )}
-                    </div>
+            <Paper className={styles.commentsSection}>
+                <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>Comments</Typography>
+                <List className={styles.commentList}>
+                    {comments.length === 0 ? (
+                        <Typography variant="body2" color="textSecondary">No comments yet.</Typography>
+                    ) : (
+                        comments.map((comment) => (
+                            <React.Fragment key={comment.id}>
+                                <ListItem>
+                                    <ListItemText
+                                        primary={<Typography sx={{ fontWeight: "bold" }}>{comment.owner}</Typography>}
+                                        secondary={comment.content}
+                                    />
+                                </ListItem>
+                                <Divider />
+                            </React.Fragment>
+                        ))
+                    )}
+                </List>
 
-                    <div className={styles.commentInput}>
-                        <input
-                            type="text"
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            placeholder="Write a comment..."
-                        />
-                        <button onClick={handleAddComment}>Post</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <Box className={styles.commentInput}>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        placeholder="Write a comment..."
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleAddComment}
+                        sx={{ ml: 1, height: "100%" }}
+                    >
+                        Post
+                    </Button>
+                </Box>
+            </Paper>
+        </Box>
     );
 };
 
