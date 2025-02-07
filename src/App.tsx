@@ -1,26 +1,33 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage/HomePage";
-import UploadPostPage from "./pages/UploadPostPage/UploadPostPage";
-import Navbar from "./components/Navbar/Navbar";
-import styles from "./App.module.css";
-import PostPage from "./pages/PostPage/PostPage";
-import EditPostPage from "./pages/EditPostPage/EditPostPage";
+import React from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import styles from './App.module.css';
+import Navbar from './components/NavBar/Navbar';
+import { AuthProvider } from './contexts/AuthContext';
+import EditPostPage from './pages/EditPostPage/EditPostPage';
+import HomePage from './pages/HomePage/HomePage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import PostPage from './pages/PostPage/PostPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
+import UploadPostPage from './pages/UploadPostPage/UploadPostPage';
 
 const App: React.FC = () => {
-    return (
-        <div className={styles.appContainer}>
-            <Router>
-                <Navbar />
-                <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/upload" element={<UploadPostPage />} />
-                    <Route path="/post/:postId" element={<PostPage />} />
-                    <Route path="/edit/:postId" element={<EditPostPage />} />
-                </Routes>
-            </Router>
-        </div>
-    );
+  return (
+    <div className={styles.appContainer}>
+      <AuthProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/upload" element={<UploadPostPage />} />
+            <Route path="/post/:postId" element={<PostPage />} />
+            <Route path="/edit/:postId" element={<EditPostPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </div>
+  );
 };
 
 export default App;

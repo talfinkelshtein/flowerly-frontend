@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar: React.FC = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const { userToken, logout } = useAuth();
 
     const handleLogout = () => {
-        setIsLoggedIn(false);
+        logout();
     };
 
     return (
@@ -15,7 +16,7 @@ const Navbar: React.FC = () => {
             <ul className={styles.navList}>
                 <li><Link to="/">Home</Link></li>
 
-                {isLoggedIn ? (
+                {userToken ? (
                     <>
                         <li><Link to="/upload">Upload Post</Link></li>
                         <li><button className={styles.logoutBtn} onClick={handleLogout}>Logout</button></li>
@@ -23,6 +24,7 @@ const Navbar: React.FC = () => {
                 ) : (
                     <>
                         <li><Link to="/register">Register</Link></li>
+                        <li><Link to="/login">Login</Link></li>
                     </>
                 )}
             </ul>
