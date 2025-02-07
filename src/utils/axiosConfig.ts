@@ -1,25 +1,30 @@
-import { isTokenExpired, refreshAccessToken } from './AuthUtils';
-import { config } from '../config';
 import axios from 'axios';
+import { config } from '../config';
+import { isTokenExpired, refreshAccessToken } from './AuthUtils';
 
 const api = axios.create({
   baseURL: config.API_BASE_URL,
 });
 
-api.interceptors.request.use(
-  async (config) => {
-    let token = localStorage.getItem('accessToken');
+export const setupAxiosInterceptors = (logout: () => void) => {
+  api.interceptors.request.use(
+    async (config) => {
+      let token = localStorage.getItem('accessToken');
 
-    if (isTokenExpired(token)) {
-      token = await refreshAccessToken();
-    }
+      if (token && isTokenExpired(token)) {
+        token = await refreshAccessToken();
+      }
 
-    if (token) {
+      if (!token) {
+        logout();
+        return Promise.reject(new Error('Session expired'));
+      }
+
       config.headers['Authorization'] = `Bearer ${token}`;
-    }
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
+};
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 export default api;

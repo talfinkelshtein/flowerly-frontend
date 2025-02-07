@@ -18,24 +18,27 @@ export const isTokenExpired = (token: string | null): boolean => {
 };
 
 export const refreshAccessToken = async (): Promise<string | null> => {
-  const refreshToken = localStorage.getItem('refreshToken');
-
-  if (!refreshToken) return null;
-
   try {
     const response = await fetch(`${config.API_BASE_URL}/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
+      body: JSON.stringify({ refreshToken: localStorage.getItem('refreshToken') }),
     });
 
-    if (response.status === 200) {
-      const data = await response.json();
-      localStorage.setItem('accessToken', data.accessToken);
-      return data.accessToken;
-    } else {
+    if (response.status === 401) {
+      alert('Session expired, please log in again.');
       return null;
     }
+
+    if (!response.ok) {
+      console.error('Failed to refresh token');
+      return null;
+    }
+
+    const data = await response.json();
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    return data.accessToken;
   } catch (error) {
     console.error('Error refreshing token:', error);
     return null;

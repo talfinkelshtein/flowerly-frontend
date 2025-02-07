@@ -1,7 +1,8 @@
 import { CredentialResponse } from '@react-oauth/google';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { googleSignin, loginUser } from '../services/UserService';
 import { LoggedUserInfo, LoginRequirements } from '../types/AuthTypes';
+import { setupAxiosInterceptors } from '../utils/axiosConfig';
 
 interface AuthContextType {
   userToken: string | null;
@@ -69,6 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userId');
+    window.location.href = '/login';
   };
 
   const setUserAccessToken = async ({ accessToken, refreshToken, _id }: LoggedUserInfo) => {
@@ -76,6 +78,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('userId', _id);
   };
+
+  useEffect(() => {
+    setupAxiosInterceptors(logout);
+  }, []);
 
   return <AuthContext.Provider value={{ userToken, login, googleLogin, logout }}>{children}</AuthContext.Provider>;
 }
