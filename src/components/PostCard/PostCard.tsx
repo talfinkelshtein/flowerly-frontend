@@ -94,7 +94,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
         <Typography variant="subtitle1" className={styles.plantType}>
           {post.plantType}
         </Typography>
-        <Typography variant="body2">{post.content}</Typography>
+        <Typography className={styles.postDescription}>{post.content}</Typography>
       </CardContent>
 
       <CardContent className={styles.postActions}>

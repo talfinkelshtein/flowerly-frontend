@@ -92,3 +92,35 @@
     background: rgba(0, 0, 0, 0.1);
     color: black;
 }
+
+.postDescription {
+    height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+    line-height: 1.5;
+    padding-right: 8px;
+    box-sizing: border-box;
+  }
+  
+
+  .postDescription::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .postDescription::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 4px;
+  }
+  
+  .postDescription::-webkit-scrollbar-thumb:hover {
+    background-color: #a1a1a1;
+  }
+  
+  .postDescription::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+  
