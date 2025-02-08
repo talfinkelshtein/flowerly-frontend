@@ -48,7 +48,7 @@ const PostPage: React.FC = () => {
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
     try {
-      const comment = await addComment(newComment, ((await getCurrentUserProfile())._id));
+      const comment = await addComment(newComment, (await getCurrentUserProfile())._id);
       setComments([...comments, comment]);
       setNewComment('');
       setPost((prev) => (prev ? { ...prev, commentsCount: prev.commentsCount + 1 } : prev));
@@ -58,7 +58,7 @@ const PostPage: React.FC = () => {
   };
 
   const getAvatarUrl = (user: UserProfileWithoutEmail) =>
-    user.profilePicture ? `${config.API_BASE_URL}${user.profilePicture}` : user.username.toUpperCase();
+    user.profilePicture ? `${config.API_BASE_URL}${user.profilePicture}` : user.username[0].toUpperCase();
 
   if (!post) return <CircularProgress sx={{ display: 'block', margin: 'auto', mt: 4 }} />;
   if (isLoading) return <CircularProgress sx={{ display: 'block', margin: 'auto', mt: 4 }} />;

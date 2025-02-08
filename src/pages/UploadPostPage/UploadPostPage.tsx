@@ -8,7 +8,6 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import styles from './UploadPostPage.module.css';
 import { config } from '../../config';
 import api from '../../utils/axiosConfig';
-import { getCurrentUserProfile } from '../../services/UserService';
 
 const exampleFlowers = ['Rose', 'Sunflower', 'Tulip', 'Daisy', 'Lavender', 'Orchid', 'Lily', 'Peony', 'Marigold', 'Jasmine'];
 
