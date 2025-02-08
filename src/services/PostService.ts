@@ -2,6 +2,7 @@ import { config } from '../config';
 import { NewPost, Post } from '../types/Post';
 import { CommentService } from './CommentService';
 import api from '../utils/axiosConfig';
+import { getUserId } from './UserService';
 
 export const PostService = {
   uploadPost: async (post: NewPost, image: File, userToken: string | null): Promise<Post> => {
@@ -55,5 +56,15 @@ export const PostService = {
 
   deletePost: async (postId: string): Promise<void> => {
     await api.delete(`${config.API_BASE_URL}/posts/${postId}`);
+  },
+
+  hasLiked: async (postId: string): Promise<{ hasLiked: boolean }> => {
+    const response = await api.get(`${config.API_BASE_URL}/posts/${postId}/hasLiked/${getUserId()}`);
+    return response.data;
+  },
+
+  toggleLike: async (postId: string): Promise<{ hasLiked: boolean; message: string; likedBy: string[] }> => {
+    const response = await api.post(`${config.API_BASE_URL}/posts/${postId}/toggleLike/${getUserId()}`);
+    return response.data;
   },
 };

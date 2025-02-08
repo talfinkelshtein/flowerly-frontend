@@ -57,6 +57,6 @@ export const setUserAccessToken = async (response: Response) => {
   }
 };
 
-export const getUserAccessToken = async () => {
-  return  localStorage.getItem('accessToken');
+export const getUserId = () => {
+  return localStorage.getItem('userId');
 };
