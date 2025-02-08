@@ -68,7 +68,7 @@ const PostPage: React.FC = () => {
     <Box className={styles.postPage}>
       <Card className={styles.postContainer}>
         <Box className={styles.postHeader}>
-          <Avatar className={styles.avatar}>{getAvatarUrl(post.owner)}</Avatar>
+          <Avatar src={getAvatarUrl(post.owner)} className={styles.avatar}></Avatar>
           <Box className={styles.postMeta}>
             <Typography variant="subtitle2" className={styles.postOwner}>
               {post.owner.username}
@@ -102,7 +102,7 @@ const PostPage: React.FC = () => {
             comments.map((comment) => (
               <React.Fragment key={comment.id}>
                 <ListItem alignItems="flex-start">
-                  <Avatar className={styles.avatar}>{getAvatarUrl(comment.owner)}</Avatar>
+                  <Avatar src={getAvatarUrl(post.owner)} className={styles.avatar}></Avatar>
                   <ListItemText
                     primary={
                       <Typography variant="subtitle2" className={styles.commentOwner}>
