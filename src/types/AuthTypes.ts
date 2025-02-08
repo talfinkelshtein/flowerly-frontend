@@ -9,9 +9,15 @@ export interface LoginRequirements {
   password: string;
 }
 
-export interface UserProfile {
+export interface UserProfileServerResponse {
   _id: string;
-  username: string;
   email: string;
+  password: string;
+  username: string;
   profilePicture?: string;
+  refreshToken?: string[];
 }
+
+export type UserProfile = Omit<UserProfileServerResponse, '_id' | 'refreshToken' | 'password'>;
+
+export type UserProfileWithoutEmail = Omit<UserProfile, 'email'>;

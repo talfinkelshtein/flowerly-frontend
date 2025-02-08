@@ -10,7 +10,7 @@ export const PostService = {
     formData.append('image', image);
     formData.append('plantType', post.plantType);
     formData.append('content', post.content);
-    formData.append('owner', post.owner);
+    formData.append('owner', post.owner.username);
 
     const response = await api.post(`${config.API_BASE_URL}/posts`, formData, {
       headers: {
