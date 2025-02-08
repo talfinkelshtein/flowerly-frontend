@@ -53,6 +53,10 @@ export const setUserAccessToken = async (response: Response) => {
   }
 };
 
+export const getUserId = () => {
+  return localStorage.getItem('userId');
+};
+
 export const getUserAccessToken = () => {
   return localStorage.getItem('accessToken');
 };
@@ -60,11 +64,11 @@ export const getUserAccessToken = () => {
 export const getUserProfile = async (userId: string) => {
   const token = getUserAccessToken();
 
-  if (!token) throw new Error("No authentication token found");
+  if (!token) throw new Error('No authentication token found');
 
   try {
     const response = await axios.get(`${config.API_BASE_URL}/users/${userId}`, {
-      headers: { Authorization: `Bearer ${token}` }, 
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     return response.data;
@@ -77,21 +81,21 @@ export const getUserProfile = async (userId: string) => {
 export const updateUserProfile = async (userId: string, formData: FormData) => {
   const token = getUserAccessToken();
 
-  if (!token) throw new Error("No authentication token found");
+  if (!token) throw new Error('No authentication token found');
   try {
-    console.log("Sending update request with:", formData);
-    console.log(formData.get("image"));
+    console.log('Sending update request with:', formData);
+    console.log(formData.get('image'));
     const response = await axios.put(`${config.API_BASE_URL}/users/${userId}`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-        "Authorization": `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
       },
     });
 
-    console.log("✅ Server response:", response.data);
+    console.log('✅ Server response:', response.data);
     return response.data;
   } catch (error) {
-    console.error("Error updating user profile:", error);
+    console.error('Error updating user profile:', error);
     throw error;
   }
 };

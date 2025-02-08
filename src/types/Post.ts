@@ -3,12 +3,12 @@ export interface Post {
     plantType: string;
     content: string;
     owner: string;
-    likes: number;
+    likedBy: string[];
     commentsCount: number;
     imagePath: string;
 }
 
-export type NewPost = Omit<Post, "id" | "likes" | "commentsCount" | "imagePath">;
+export type NewPost = Omit<Post, "id" | "likedBy" | "commentsCount" | "imagePath">;
 
 export interface Comment {
     commenter: string;
