@@ -1,6 +1,7 @@
 import { CredentialResponse } from '@react-oauth/google';
 import axios from 'axios';
 import { config } from '../config';
+import { UserProfileServerResponse } from '../types/AuthTypes';
 
 export const registerUser = async (email: string, password: string): Promise<Response> => {
   try {
@@ -53,15 +54,16 @@ export const setUserAccessToken = async (response: Response) => {
   }
 };
 
-export const getUserId = () => {
-  return localStorage.getItem('userId');
+export const getUserId = (): string => {
+  return localStorage.getItem('userId') ?? '';
 };
 
-export const getUserAccessToken = () => {
-  return localStorage.getItem('accessToken');
+export const getUserAccessToken = (): string => {
+  return localStorage.getItem('accessToken') ?? '';
 };
 
-export const getUserProfile = async (userId: string) => {
+export const getCurrentUserProfile = async (): Promise<UserProfileServerResponse> => {
+  const userId = getUserId();
   const token = getUserAccessToken();
 
   if (!token) throw new Error('No authentication token found');

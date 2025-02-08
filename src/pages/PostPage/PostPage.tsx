@@ -19,6 +19,7 @@ import { useParams } from 'react-router-dom';
 import { config } from '../../config';
 import useComments from '../../custom_hooks/useComments';
 import { PostService } from '../../services/PostService';
+import { getCurrentUserProfile } from '../../services/UserService';
 import { UserProfileWithoutEmail } from '../../types/AuthTypes';
 import { Post } from '../../types/Post';
 import styles from './PostPage.module.css';
@@ -47,7 +48,7 @@ const PostPage: React.FC = () => {
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
     try {
-      const comment = await addComment(newComment, 'CurrentUser');
+      const comment = await addComment(newComment, ((await getCurrentUserProfile())._id));
       setComments([...comments, comment]);
       setNewComment('');
       setPost((prev) => (prev ? { ...prev, commentsCount: prev.commentsCount + 1 } : prev));
