@@ -1,50 +1,67 @@
 .register-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 300px;
-    margin: auto;
-    padding: 20px;
-    gap: 16px;
-  }
-  
-  /* Ensure all input fields and button are the same width */
-  .register-form .MuiTextField-root,
-  .register-form .MuiButton-root {
-    width: 100%;
-  }
-  
-  /* Add hover effect to text fields */
-  .register-form .MuiTextField-root .MuiInputBase-root {
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .register-form .MuiTextField-root .MuiInputBase-root:hover {
-    box-shadow: 0px 0px 8px rgba(0, 0, 255, 0.3);
-  }
-  
-  /* Register button animations */
-  .register-form .MuiButton-root {
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .register-form .MuiButton-root:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Google Login button container */
-  .google-login-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    min-height: 50px;
-    margin-top: 20px;
-  }
-  
-  /* Prevent Google button from shrinking */
-  .google-login-container iframe {
-    min-width: 200px !important;
-    max-width: 100% !important;
-  }
-  
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  max-width: 400px;
+  margin: auto;
+}
+
+.profile-picture-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.avatar-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  padding: 5px;
+  cursor: pointer;
+}
+
+.register-form .MuiTextField-root,
+.register-form .MuiButton-root {
+  width: 100%;
+}
+
+.register-form .MuiTextField-root .MuiInputBase-root {
+  transition: all 0.3s ease-in-out;
+}
+
+.register-form .MuiTextField-root .MuiInputBase-root:hover {
+  box-shadow: 0px 0px 8px rgba(0, 0, 255, 0.3);
+}
+
+.register-form .MuiButton-root {
+  transition: all 0.3s ease-in-out;
+}
+
+.register-form .MuiButton-root:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.google-login-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 50px;
+  margin-top: 20px;
+}
+
+.google-login-container iframe {
+  min-width: 200px !important;
+  max-width: 100% !important;
+}

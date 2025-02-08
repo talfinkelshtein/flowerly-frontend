@@ -8,6 +8,7 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import styles from './UploadPostPage.module.css';
 import { config } from '../../config';
 import api from '../../utils/axiosConfig';
+import { getCurrentUserProfile } from '../../services/UserService';
 
 const exampleFlowers = ['Rose', 'Sunflower', 'Tulip', 'Daisy', 'Lavender', 'Orchid', 'Lily', 'Peony', 'Marigold', 'Jasmine'];
 
@@ -55,7 +56,7 @@ const UploadPostPage: React.FC = () => {
       return;
     }
     try {
-      await PostService.uploadPost({ content: description, owner: 'CurrentUser', plantType }, image, userToken);
+      await PostService.uploadPost({ content: description, owner: await getCurrentUserProfile(), plantType }, image, userToken);
       navigate('/');
     } catch (error) {
       console.error('Error uploading post:', error);

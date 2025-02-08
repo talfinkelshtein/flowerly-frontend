@@ -3,12 +3,12 @@ import axios from 'axios';
 import { config } from '../config';
 import { UserProfileServerResponse } from '../types/AuthTypes';
 
-export const registerUser = async (email: string, password: string): Promise<Response> => {
+export const registerUser = async (formData: FormData) => {
   try {
-    const response = await fetch(`${config.API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+    const response = await axios.post(`${config.API_BASE_URL}/auth/register`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
     return response;
   } catch (error) {
@@ -85,8 +85,6 @@ export const updateUserProfile = async (userId: string, formData: FormData) => {
 
   if (!token) throw new Error('No authentication token found');
   try {
-    console.log('Sending update request with:', formData);
-    console.log(formData.get('image'));
     const response = await axios.put(`${config.API_BASE_URL}/users/${userId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
