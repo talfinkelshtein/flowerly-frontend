@@ -92,7 +92,7 @@ export const updateUserProfile = async (userId: string, formData: FormData) => {
       },
     });
 
-    console.log('✅ Server response:', response.data);
+    console.log(' Server response:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error updating user profile:', error);
