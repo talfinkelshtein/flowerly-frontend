@@ -1,34 +1,48 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styles from './Navbar.module.css';
-import { useAuth } from '../../contexts/AuthContext';
+import React from "react";
+import { Link } from "react-router-dom";
+import { AppBar, Toolbar, Button, IconButton, Typography } from "@mui/material";
+import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
+import styles from "./Navbar.module.css"; // Keep separate CSS
+
+import { useAuth } from "../../contexts/AuthContext";
 
 const Navbar: React.FC = () => {
     const { userToken, logout } = useAuth();
 
-    const handleLogout = () => {
-        logout();
-    };
-
     return (
-        <nav className={styles.navbar}>
-            <h2 className={styles.logo}><Link to="/">Flowerly App</Link></h2>
-            <ul className={styles.navList}>
-                <li><Link to="/">Home</Link></li>
+        <AppBar position="sticky" className={styles.navbar}>
+            <Toolbar className={styles.toolbar}>
+                <IconButton component={Link} to="/" className={styles.logo}>
+                    <LocalFloristIcon className={styles.icon} />
+                    <Typography variant="h6">Flowerly App</Typography>
+                </IconButton>
 
-                {userToken ? (
-                    <>
-                        <li><Link to="/upload">Upload Post</Link></li>
-                        <li><button className={styles.logoutBtn} onClick={handleLogout}>Logout</button></li>
-                    </>
-                ) : (
-                    <>
-                        <li><Link to="/register">Register</Link></li>
-                        <li><Link to="/login">Login</Link></li>
-                    </>
-                )}
-            </ul>
-        </nav>
+                <div className={styles.navLinks}>
+                    <Button component={Link} to="/" className={styles.navButton}>
+                        Home
+                    </Button>
+                    {userToken ? (
+                        <>
+                            <Button component={Link} to="/upload" className={styles.navButton}>
+                                Upload Post
+                            </Button>
+                            <Button onClick={logout} className={styles.navButton}>
+                                Logout
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button component={Link} to="/register" className={styles.navButton}>
+                                Register
+                            </Button>
+                            <Button component={Link} to="/login" className={styles.navButton}>
+                                Login
+                            </Button>
+                        </>
+                    )}
+                </div>
+            </Toolbar>
+        </AppBar>
     );
 };
 
