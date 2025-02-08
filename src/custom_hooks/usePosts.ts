@@ -2,16 +2,15 @@ import { useEffect, useState } from "react";
 import { PostService } from "../services/PostService";
 import { Post } from "../types/Post";
 
-const usePosts = () => {
+const usePosts = (userId?: string) => {
     const [posts, setPosts] = useState<Post[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchPosts = async () => {
-            setIsLoading(true);
             try {
-                const data = await PostService.getAllPosts();
+                const data = userId ? await PostService.getUserPosts(userId) : await PostService.getAllPosts();
                 setPosts(data);
             } catch (error) {
                 setError("Failed to load posts");
@@ -22,9 +21,9 @@ const usePosts = () => {
         };
 
         fetchPosts();
-    }, []);
+    }, [userId]);
 
-    return { posts, setPosts, error, setError, isLoading, setIsLoading };
+    return { posts, setPosts, isLoading, error };
 };
 
 export default usePosts;

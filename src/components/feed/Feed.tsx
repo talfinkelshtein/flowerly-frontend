@@ -1,11 +1,15 @@
-import React from 'react';
-import usePosts from '../../custom_hooks/usePosts';
-import PostCard from '../PostCard/PostCard';
-import styles from './Feed.module.css';
-import { Post } from '../../types/Post';
+import React from "react";
+import usePosts from "../../custom_hooks/usePosts";
+import PostCard from "../PostCard/PostCard";
+import styles from "./Feed.module.css";
+import { Post } from "../../types/Post";
 
-const Feed: React.FC = () => {
-    const { posts, setPosts, isLoading, error } = usePosts();
+interface FeedProps {
+    userId?: string; 
+}
+
+const Feed: React.FC<FeedProps> = ({ userId }) => {
+    const { posts, setPosts, isLoading, error } = usePosts(userId); 
 
     const handleDelete = (postId: string) => {
         setPosts(posts.filter((post) => post.id !== postId));
@@ -19,11 +23,7 @@ const Feed: React.FC = () => {
 
             <div className={styles.postsFlexbox}>
                 {posts.map((post: Post) => (
-                    <PostCard 
-                        key={post.id} 
-                        post={post} 
-                        onDelete={handleDelete} 
-                    />
+                    <PostCard key={post.id} post={post} onDelete={handleDelete} />
                 ))}
             </div>
         </div>

@@ -15,6 +15,7 @@ const UploadPostPage: React.FC = () => {
   const { userToken } = useAuth();
   const [plantType, setPlantType] = useState('');
   const [description, setDescription] = useState('');
+  const userId = localStorage.getItem("userId"); 
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -50,13 +51,18 @@ const UploadPostPage: React.FC = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!image || !plantType || !description) {
-      alert('Please fill all fields before submitting.');
+    if (!image || !plantType || !description || !userId) {
+      alert("Please fill all fields before submitting.");
       return;
     }
     try {
-      await PostService.uploadPost({ content: description, owner: 'CurrentUser', plantType }, image, userToken);
-      navigate('/');
+      await PostService.uploadPost({ 
+        content: description, 
+        ownerId: userId, 
+        plantType 
+      }, image, userToken);
+      
+      navigate("/");
     } catch (error) {
       console.error('Error uploading post:', error);
     }

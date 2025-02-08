@@ -1,20 +1,21 @@
-import EditIcon from '@mui/icons-material/Edit';
-import { Avatar, Button, CircularProgress, Container, IconButton, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { config } from '../../config';
-import { useAuth } from '../../contexts/AuthContext';
-import { getCurrentUserProfile, updateUserProfile } from '../../services/UserService';
-import { UserProfile } from '../../types/AuthTypes';
-import styles from './ProfilePage.module.css';
+import React, { useEffect, useState } from "react";
+import { TextField, Button, Avatar, Container, Typography, CircularProgress, IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import { getCurrentUserProfile, updateUserProfile } from "../../services/UserService";
+import { useAuth } from "../../contexts/AuthContext";
+import { UserProfile } from "../../types/AuthTypes";
+import { config } from "../../config";
+import Feed from "../../components/Feed/Feed"; 
+import styles from "./ProfilePage.module.css";
 
 const ProfilePage: React.FC = () => {
-  const { userToken } = useAuth();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [newUsername, setNewUsername] = useState('');
-  const [newImage, setNewImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const userId = localStorage.getItem('userId');
+    const { userToken } = useAuth();
+    const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [newUsername, setNewUsername] = useState("");
+    const [newImage, setNewImage] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
+    const userId = localStorage.getItem("userId") || undefined;
 
   useEffect(() => {
     if (!userToken || !userId) return;
@@ -56,10 +57,10 @@ const ProfilePage: React.FC = () => {
         formData.append('image', newImage);
       }
 
-      if (!newImage && newUsername === profile.username) {
-        console.log('No changes detected.');
-        return;
-      }
+            if (!newImage && newUsername === profile.username) {
+                console.log("No changes detected.");
+                return;
+            }
 
       const updatedProfile = await updateUserProfile(userId, formData);
       setProfile(updatedProfile);
@@ -79,15 +80,18 @@ const ProfilePage: React.FC = () => {
         My Profile
       </Typography>
 
-      <div className={styles.profileInfo}>
-        <div className={styles.avatarContainer}>
-          <Avatar src={preview || (profile?.profilePicture ? `${config.API_BASE_URL}${profile.profilePicture}` : '')} className={styles.avatar} />
-          <input type="file" accept="image/*" onChange={handleImageChange} className={styles.fileInput} />
-          <IconButton className={styles.editIcon} component="label">
-            <EditIcon />
-            <input type="file" accept="image/*" hidden onChange={handleImageChange} />
-          </IconButton>
-        </div>
+            <div className={styles.profileInfo}>
+                <div className={styles.avatarContainer}>
+                    <Avatar
+                        src={preview || (profile?.profilePicture ? `${config.API_BASE_URL}${profile.profilePicture}` : "")}
+                        className={styles.avatar}
+                    />
+                    <input type="file" accept="image/*" onChange={handleImageChange} className={styles.fileInput} />
+                    <IconButton className={styles.editIcon} component="label">
+                        <EditIcon />
+                        <input type="file" accept="image/*" hidden onChange={handleImageChange} />
+                    </IconButton>
+                </div>
 
         <TextField
           label="Username"
@@ -100,18 +104,21 @@ const ProfilePage: React.FC = () => {
 
         <TextField label="Email" variant="outlined" fullWidth value={profile?.email} disabled className={styles.inputField} />
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSave}
-          className={styles.saveButton}
-          disabled={!newImage && newUsername === profile.username}
-        >
-          Save Changes
-        </Button>
-      </div>
-    </Container>
-  );
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSave}
+                    className={styles.saveButton}
+                    disabled={!newImage && newUsername === profile.username}
+                >
+                    Save Changes
+                </Button>
+            </div>
+
+            <Typography variant="h5" className={styles.feedTitle}>My Posts</Typography>
+            <Feed userId={userId} /> 
+        </Container>
+    );
 };
 
 export default ProfilePage;

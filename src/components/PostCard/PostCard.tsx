@@ -1,8 +1,8 @@
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import FavoriteIcon from '@mui/icons-material/Favorite'; // Filled heart
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; // Outlined heart
+import FavoriteIcon from '@mui/icons-material/Favorite'; 
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogTitle, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
