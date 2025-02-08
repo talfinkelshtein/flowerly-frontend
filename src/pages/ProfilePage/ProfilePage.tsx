@@ -3,16 +3,18 @@ import { TextField, Button, Avatar, Container, Typography, CircularProgress, Ico
 import EditIcon from "@mui/icons-material/Edit";
 import { getUserProfile, updateUserProfile } from "../../services/UserService";
 import { useAuth } from "../../contexts/AuthContext";
+import { UserProfile } from "../../types/AuthTypes";
+import { config } from "../../config"; 
 import styles from "./ProfilePage.module.css";
 
 const ProfilePage: React.FC = () => {
     const { userToken } = useAuth();
-    const [profile, setProfile] = useState<{ username: string; email: string; profilePicture: string | null } | null>(null);
+    const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [newUsername, setNewUsername] = useState("");
     const [newImage, setNewImage] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
-    const userId = localStorage.getItem("userId"); // Ensure we get userId
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         if (!userToken || !userId) return;
@@ -47,8 +49,17 @@ const ProfilePage: React.FC = () => {
 
         try {
             const formData = new FormData();
-            formData.append("username", newUsername);
-            if (newImage) formData.append("image", newImage);
+            if (newUsername !== profile.username) {
+                formData.append("username", newUsername);
+            }
+            if (newImage) {
+                formData.append("image", newImage);
+            }
+
+            if (!newImage && newUsername === profile.username) {
+                console.log("No changes detected.");
+                return; 
+            }
 
             const updatedProfile = await updateUserProfile(userId, formData);
             setProfile(updatedProfile);
@@ -68,7 +79,10 @@ const ProfilePage: React.FC = () => {
 
             <div className={styles.profileInfo}>
                 <div className={styles.avatarContainer}>
-                    <Avatar src={preview || profile?.profilePicture || ""} className={styles.avatar} />
+                    <Avatar 
+                        src={preview || (profile?.profilePicture ? `${config.API_BASE_URL}${profile.profilePicture}` : "")} 
+                        className={styles.avatar} 
+                    />
                     <input type="file" accept="image/*" onChange={handleImageChange} className={styles.fileInput} />
                     <IconButton className={styles.editIcon} component="label">
                         <EditIcon />
@@ -94,7 +108,13 @@ const ProfilePage: React.FC = () => {
                     className={styles.inputField}
                 />
 
-                <Button variant="contained" color="primary" onClick={handleSave} className={styles.saveButton}>
+                <Button 
+                    variant="contained" 
+                    color="primary" 
+                    onClick={handleSave} 
+                    className={styles.saveButton}
+                    disabled={!newImage && newUsername === profile.username} 
+                >
                     Save Changes
                 </Button>
             </div>
