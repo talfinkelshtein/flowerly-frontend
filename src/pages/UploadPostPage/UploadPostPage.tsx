@@ -1,31 +1,23 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { PostService } from "../../services/PostService";
-import {
-  Container,
-  Typography,
-  TextField,
-  Select,
-  MenuItem,
-  Button,
-  InputLabel,
-  FormControl,
-  CardMedia,
-  Box,
-  Stack
-} from "@mui/material";
-import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import styles from "./UploadPostPage.module.css";
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { PostService } from '../../services/PostService';
+import { Container, Typography, TextField, Select, MenuItem, Button, InputLabel, FormControl, CardMedia, Box, Stack } from '@mui/material';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import styles from './UploadPostPage.module.css';
+import { config } from '../../config';
+import api from '../../utils/axiosConfig';
 
-const exampleFlowers = ["Rose", "Sunflower", "Tulip", "Daisy", "Lavender", "Orchid", "Lily", "Peony", "Marigold", "Jasmine"];
+const exampleFlowers = ['Rose', 'Sunflower', 'Tulip', 'Daisy', 'Lavender', 'Orchid', 'Lily', 'Peony', 'Marigold', 'Jasmine'];
 
 const UploadPostPage: React.FC = () => {
   const { userToken } = useAuth();
-  const [plantType, setPlantType] = useState("");
-  const [description, setDescription] = useState("");
+  const [plantType, setPlantType] = useState('');
+  const [description, setDescription] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -38,17 +30,35 @@ const UploadPostPage: React.FC = () => {
     }
   };
 
+  const fetchFlowerDescription = async () => {
+    if (!plantType) {
+      alert('Please select a flower first.');
+      return;
+    }
+    setLoading(true);
+
+    try {
+      const response = await api.get(`${config.API_BASE_URL}/ai/flower-description`, { params: { plantType } });
+      setDescription(response.data.description);
+    } catch (error) {
+      console.error('Error fetching description:', error);
+      alert('Failed to fetch flower description.');
+    }
+
+    setLoading(false);
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!image || !plantType || !description) {
-      alert("Please fill all fields before submitting.");
+      alert('Please fill all fields before submitting.');
       return;
     }
     try {
-      await PostService.uploadPost({ content: description, owner: "CurrentUser", plantType }, image, userToken);
-      navigate("/");
+      await PostService.uploadPost({ content: description, owner: 'CurrentUser', plantType }, image, userToken);
+      navigate('/');
     } catch (error) {
-      console.error("Error uploading post:", error);
+      console.error('Error uploading post:', error);
     }
   };
 
@@ -58,8 +68,8 @@ const UploadPostPage: React.FC = () => {
         Upload a New Post
       </Typography>
       <form onSubmit={handleSubmit} className={styles.uploadForm}>
-        <Stack direction={{ xs: "column", md: "row" }} spacing={3} alignItems="center">
-          <Box className={styles.imageContainer} onClick={() => document.getElementById("fileInput")?.click()}>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} alignItems="center">
+          <Box className={styles.imageContainer} onClick={() => document.getElementById('fileInput')?.click()}>
             {preview ? (
               <Box className={styles.imageWrapper}>
                 <CardMedia component="img" image={preview} alt="Preview" className={styles.imagePreview} />
@@ -90,25 +100,25 @@ const UploadPostPage: React.FC = () => {
               </Select>
             </FormControl>
 
-            <TextField
-              label="Description"
-              multiline
-              rows={3}
-              fullWidth
-              variant="outlined"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
+            <Stack direction="row" spacing={2} alignItems="center">
+              <TextField
+                label="Description"
+                multiline
+                rows={3}
+                fullWidth
+                variant="outlined"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+              <Button variant="contained" color="primary" onClick={fetchFlowerDescription} disabled={loading}>
+                <AutoAwesomeIcon />
+              </Button>
+            </Stack>
 
-            <Button
-              type="submit"
-              variant="contained"
-              className={styles.submitButton}
-            >
+            <Button type="submit" variant="contained" className={styles.submitButton}>
               Upload Post
             </Button>
-
           </Stack>
         </Stack>
       </form>
