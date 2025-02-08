@@ -19,6 +19,7 @@ import { useParams } from 'react-router-dom';
 import { config } from '../../config';
 import useComments from '../../custom_hooks/useComments';
 import { PostService } from '../../services/PostService';
+import { UserProfileWithoutEmail } from '../../types/AuthTypes';
 import { Post } from '../../types/Post';
 import styles from './PostPage.module.css';
 
@@ -55,6 +56,9 @@ const PostPage: React.FC = () => {
     }
   };
 
+  const getAvatarUrl = (user: UserProfileWithoutEmail) =>
+    user.profilePicture ? `${config.API_BASE_URL}${user.profilePicture}` : user.username.toUpperCase();
+
   if (!post) return <CircularProgress sx={{ display: 'block', margin: 'auto', mt: 4 }} />;
   if (isLoading) return <CircularProgress sx={{ display: 'block', margin: 'auto', mt: 4 }} />;
   if (error) return <Typography color="error">{error}</Typography>;
@@ -63,10 +67,10 @@ const PostPage: React.FC = () => {
     <Box className={styles.postPage}>
       <Card className={styles.postContainer}>
         <Box className={styles.postHeader}>
-          <Avatar className={styles.avatar}>{post.owner[0].toUpperCase()}</Avatar>
+          <Avatar className={styles.avatar}>{getAvatarUrl(post.owner)}</Avatar>
           <Box className={styles.postMeta}>
             <Typography variant="subtitle2" className={styles.postOwner}>
-              {post.owner}
+              {post.owner.username}
             </Typography>
             <Typography variant="caption" color="textSecondary">
               Posted on {new Date().toLocaleDateString()}
@@ -97,11 +101,11 @@ const PostPage: React.FC = () => {
             comments.map((comment) => (
               <React.Fragment key={comment.id}>
                 <ListItem alignItems="flex-start">
-                  <Avatar className={styles.avatar}>{comment.owner[0].toUpperCase()}</Avatar>
+                  <Avatar className={styles.avatar}>{getAvatarUrl(comment.owner)}</Avatar>
                   <ListItemText
                     primary={
                       <Typography variant="subtitle2" className={styles.commentOwner}>
-                        {comment.owner}
+                        {comment.owner.username}
                       </Typography>
                     }
                     secondary={comment.content}

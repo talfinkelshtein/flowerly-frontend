@@ -15,3 +15,5 @@ export interface UserProfile {
   email: string;
   profilePicture?: string;
 }
+
+export type UserProfileWithoutEmail = Omit<UserProfile, 'email'>;
