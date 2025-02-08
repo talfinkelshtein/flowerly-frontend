@@ -22,7 +22,6 @@ const Feed: React.FC = () => {
                     <PostCard 
                         key={post.id} 
                         post={post} 
-                        onLike={() => {}} 
                         onDelete={handleDelete} 
                     />
                 ))}
