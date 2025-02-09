@@ -10,7 +10,7 @@ export const PostService = {
     formData.append('image', image);
     formData.append('plantType', post.plantType);
     formData.append('content', post.content);
-    formData.append('owner', post.owner);
+    formData.append('owner', post.ownerId);
 
     const response = await api.post(`${config.API_BASE_URL}/posts`, formData, {
       headers: {
@@ -67,4 +67,9 @@ export const PostService = {
     const response = await api.post(`${config.API_BASE_URL}/posts/${postId}/toggleLike/${getUserId()}`);
     return response.data;
   },
-};
+
+  getUserPosts: async (userId: string): Promise<Post[]> => {
+    const response = await api.get(`${config.API_BASE_URL}/posts?owner=${userId}`);
+    return response.data;
+  }
+}

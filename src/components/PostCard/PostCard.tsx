@@ -1,8 +1,8 @@
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import FavoriteIcon from '@mui/icons-material/Favorite'; // Filled heart
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; // Outlined heart
+import FavoriteIcon from '@mui/icons-material/Favorite'; 
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogTitle, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -42,10 +42,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
     try {
       const response = await PostService.toggleLike(post.id);
       const userId = getUserId();
-      if (userId) {
-        const hasLiked = response.likedBy.includes(userId);
-        setHasLiked(hasLiked);
-      }
+      const hasLiked = response.likedBy.includes(userId);
+      setHasLiked(hasLiked);
       numberOfLikesRef.current = response.likedBy.length;
     } catch (error) {
       console.error('Failed to toggle like:', error);
@@ -68,7 +66,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
     <Card className={styles.postCard}>
       <CardContent className={styles.postHeader}>
         <Typography variant="subtitle2" className={styles.owner}>
-          {post.owner}
+          {post.owner.username}
         </Typography>
         <IconButton onClick={handleMenuOpen} className={styles.menuButton}>
           <MoreVertIcon />

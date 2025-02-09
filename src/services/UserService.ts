@@ -1,13 +1,14 @@
 import { CredentialResponse } from '@react-oauth/google';
 import axios from 'axios';
 import { config } from '../config';
+import { UserProfileServerResponse } from '../types/AuthTypes';
 
-export const registerUser = async (email: string, password: string): Promise<Response> => {
+export const registerUser = async (formData: FormData) => {
   try {
-    const response = await fetch(`${config.API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+    const response = await axios.post(`${config.API_BASE_URL}/auth/register`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
     return response;
   } catch (error) {
@@ -53,15 +54,16 @@ export const setUserAccessToken = async (response: Response) => {
   }
 };
 
-export const getUserId = () => {
-  return localStorage.getItem('userId');
+export const getUserId = (): string => {
+  return localStorage.getItem('userId') ?? '';
 };
 
-export const getUserAccessToken = () => {
-  return localStorage.getItem('accessToken');
+export const getUserAccessToken = (): string => {
+  return localStorage.getItem('accessToken') ?? '';
 };
 
-export const getUserProfile = async (userId: string) => {
+export const getCurrentUserProfile = async (): Promise<UserProfileServerResponse> => {
+  const userId = getUserId();
   const token = getUserAccessToken();
 
   if (!token) throw new Error('No authentication token found');
@@ -83,8 +85,6 @@ export const updateUserProfile = async (userId: string, formData: FormData) => {
 
   if (!token) throw new Error('No authentication token found');
   try {
-    console.log('Sending update request with:', formData);
-    console.log(formData.get('image'));
     const response = await axios.put(`${config.API_BASE_URL}/users/${userId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -92,7 +92,7 @@ export const updateUserProfile = async (userId: string, formData: FormData) => {
       },
     });
 
-    console.log('✅ Server response:', response.data);
+    console.log(' Server response:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error updating user profile:', error);
