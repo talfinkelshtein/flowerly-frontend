@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useCallback } from "react";
 import usePosts from "../../custom_hooks/usePosts";
 import PostCard from "../PostCard/PostCard";
 import styles from "./Feed.module.css";
@@ -9,23 +9,48 @@ interface FeedProps {
 }
 
 const Feed: React.FC<FeedProps> = ({ userId }) => {
-    const { posts, setPosts, isLoading, error } = usePosts(userId); 
+    const { posts, setPosts, isLoading, error, fetchMorePosts, hasMore } = usePosts(userId);
+    const observerRef = useRef<IntersectionObserver | null>(null);
+
+    const lastPostRef = useCallback(
+        (node: HTMLDivElement) => {
+            if (isLoading || !hasMore) return;
+
+            if (observerRef.current) observerRef.current.disconnect();
+
+            observerRef.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    fetchMorePosts();
+                }
+            });
+
+            if (node) observerRef.current.observe(node);
+        },
+        [isLoading, hasMore, fetchMorePosts]
+    );
 
     const handleDelete = (postId: string) => {
-        setPosts(posts.filter((post) => post.id !== postId));
+        setPosts((prev) => prev.filter((post) => post.id !== postId));
     };
 
     return (
         <div className={styles.feedContainer}>
-            {isLoading && <p>Loading posts...</p>}
+            {isLoading && posts.length === 0 && <p>Loading posts...</p>}
             {error && <p>Error: {error}</p>}
             {posts.length === 0 && !isLoading && <p>No posts available.</p>}
 
             <div className={styles.postsFlexbox}>
-                {posts.map((post: Post) => (
-                    <PostCard key={post.id} post={post} onDelete={handleDelete} />
+                {posts.map((post: Post, index) => (
+                    <PostCard 
+                        key={post.id} 
+                        post={post} 
+                        onDelete={handleDelete} 
+                        ref={index === posts.length - 1 ? lastPostRef : undefined} 
+                    />
                 ))}
             </div>
+
+            {isLoading && posts.length > 0 && <p>Loading more posts...</p>}
         </div>
     );
 };
