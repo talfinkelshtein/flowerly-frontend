@@ -9,7 +9,7 @@ interface FeedProps {
 }
 
 const Feed: React.FC<FeedProps> = ({ userId }) => {
-    const { posts, setPosts, isLoading, error, fetchMorePosts, hasMore } = usePosts(userId);
+    const { posts, setPosts, isLoading, error, fetchMorePosts, hasMore, feedRef } = usePosts(userId);
     const observerRef = useRef<IntersectionObserver | null>(null);
 
     const lastPostRef = useCallback(
@@ -34,7 +34,7 @@ const Feed: React.FC<FeedProps> = ({ userId }) => {
     };
 
     return (
-        <div className={styles.feedContainer}>
+        <div ref={feedRef} className={styles.feedContainer}>
             {isLoading && posts.length === 0 && <p>Loading posts...</p>}
             {error && <p>Error: {error}</p>}
             {posts.length === 0 && !isLoading && <p>No posts available.</p>}
