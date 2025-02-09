@@ -71,5 +71,10 @@ export const PostService = {
   getUserPosts: async (userId: string): Promise<Post[]> => {
     const response = await api.get(`${config.API_BASE_URL}/posts?owner=${userId}`);
     return response.data;
-  }
-}
+  },
+
+  generateAiDescription: async (plantType: string): Promise<{ description: string }> => {
+    const response = await api.get(`${config.API_BASE_URL}/ai/flower-description`, { params: { plantType } });
+    return response.data;
+  },
+};

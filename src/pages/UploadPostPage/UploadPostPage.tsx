@@ -1,13 +1,11 @@
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import { Box, Button, CardMedia, Container, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { PostService } from '../../services/PostService';
-import { Container, Typography, TextField, Select, MenuItem, Button, InputLabel, FormControl, CardMedia, Box, Stack } from '@mui/material';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import styles from './UploadPostPage.module.css';
-import { config } from '../../config';
-import api from '../../utils/axiosConfig';
 
 const exampleFlowers = ['Rose', 'Sunflower', 'Tulip', 'Daisy', 'Lavender', 'Orchid', 'Lily', 'Peony', 'Marigold', 'Jasmine'];
 
@@ -15,7 +13,7 @@ const UploadPostPage: React.FC = () => {
   const { userToken } = useAuth();
   const [plantType, setPlantType] = useState('');
   const [description, setDescription] = useState('');
-  const userId = localStorage.getItem("userId"); 
+  const userId = localStorage.getItem('userId');
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -39,8 +37,8 @@ const UploadPostPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await api.get(`${config.API_BASE_URL}/ai/flower-description`, { params: { plantType } });
-      setDescription(response.data.description);
+      const data = await PostService.generateAiDescription(plantType);
+      setDescription(data.description);
     } catch (error) {
       console.error('Error fetching description:', error);
       alert('Failed to fetch flower description.');
@@ -52,17 +50,21 @@ const UploadPostPage: React.FC = () => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!image || !plantType || !description || !userId) {
-      alert("Please fill all fields before submitting.");
+      alert('Please fill all fields before submitting.');
       return;
     }
     try {
-      await PostService.uploadPost({ 
-        content: description, 
-        ownerId: userId, 
-        plantType 
-      }, image, userToken);
-      
-      navigate("/");
+      await PostService.uploadPost(
+        {
+          content: description,
+          ownerId: userId,
+          plantType,
+        },
+        image,
+        userToken
+      );
+
+      navigate('/');
     } catch (error) {
       console.error('Error uploading post:', error);
     }
