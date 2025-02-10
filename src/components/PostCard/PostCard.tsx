@@ -4,8 +4,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogTitle, IconButton, Menu, MenuItem, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Avatar, Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogTitle, IconButton, Menu, MenuItem, Typography } from '@mui/material';
+import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ErrorMessageSnackBar from '../../components/errorMessageSnackBar/errorMessageSnackBar';
 import { config } from '../../config';
@@ -19,7 +19,7 @@ interface PostCardProps {
   onDelete: (id: string) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
+const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onDelete }, ref) => {
   const navigate = useNavigate();
   const numberOfLikesRef = useRef(post.likedBy.length);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
@@ -78,11 +78,18 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
 
   return (
     <>
-      <Card className={styles.postCard} onClick={handleCardClick} style={{ cursor: 'pointer' }}>
+      <Card className={styles.postCard} onClick={handleCardClick} ref={ref} style={{ cursor: 'pointer' }}>
         <CardContent className={styles.postHeader}>
-          <Typography variant="subtitle2" className={styles.owner}>
-            {post.owner.username}
-          </Typography>
+        <div className={styles.usernameAndAvatar}>
+      <Avatar
+        src={post.owner.profilePicture ? `${config.API_BASE_URL}${post.owner.profilePicture}` : ''}
+        alt={post.owner.username}
+        sx={{ width: 30, height: 30 }} 
+      />
+      <Typography variant="subtitle2" className={styles.owner}>
+        {post.owner.username}
+      </Typography>
+    </div>
           <IconButton
             onClick={(clickEvent) => {
               clickEvent.stopPropagation();
@@ -182,6 +189,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
       <ErrorMessageSnackBar open={snackbarOpen} onClose={() => setSnackbarOpen(false)} errorMessage={actionError} />
     </>
   );
-};
+});
 
 export default PostCard;
