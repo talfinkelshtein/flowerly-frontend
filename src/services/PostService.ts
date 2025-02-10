@@ -22,16 +22,20 @@ export const PostService = {
     return response.data;
   },
 
-  getAllPosts: async (): Promise<Post[]> => {
-    const response = await api.get(`${config.API_BASE_URL}/posts`);
-    const posts = response.data;
+  getPosts: async (userId?: string, page: number = 1, limit: number = 4): Promise<Post[]> => {
+    const response = await api.get(`${config.API_BASE_URL}/posts`, {
+      params: { owner: userId, page, limit }, 
+    });
 
+    const  posts  = response.data;
     const postsWithCommentsCount = await Promise.all(
       posts.map(async (post: Post) => {
         const comments = await CommentService.getCommentsByPost(post.id);
         return { ...post, commentsCount: comments.length };
       })
     );
+
+    console.log(postsWithCommentsCount);
 
     return postsWithCommentsCount;
   },
@@ -65,16 +69,6 @@ export const PostService = {
 
   toggleLike: async (postId: string): Promise<{ hasLiked: boolean; message: string; likedBy: string[] }> => {
     const response = await api.post(`${config.API_BASE_URL}/posts/${postId}/toggleLike/${getUserId()}`);
-    return response.data;
-  },
-
-  getUserPosts: async (userId: string): Promise<Post[]> => {
-    const response = await api.get(`${config.API_BASE_URL}/posts?owner=${userId}`);
-    return response.data;
-  },
-
-  generateAiDescription: async (plantType: string): Promise<{ description: string }> => {
-    const response = await api.get(`${config.API_BASE_URL}/ai/flower-description`, { params: { plantType } });
     return response.data;
   },
 };

@@ -1,12 +1,12 @@
+import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogTitle, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import FavoriteIcon from '@mui/icons-material/Favorite'; 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Button, Card, CardContent, CardMedia, Dialog, DialogActions, DialogTitle, IconButton, Menu, MenuItem, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { config } from '../../config';
 import { PostService } from '../../services/PostService';
 import { getUserId } from '../../services/UserService';
@@ -18,7 +18,7 @@ interface PostCardProps {
   onDelete: (id: string) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
+const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onDelete }, ref) => {
   const numberOfLikesRef = useRef(post.likedBy.length);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -63,7 +63,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
   }, [post.id]);
 
   return (
-    <Card className={styles.postCard}>
+    <Card className={styles.postCard} ref={ref}> 
       <CardContent className={styles.postHeader}>
         <Typography variant="subtitle2" className={styles.owner}>
           {post.owner.username}
@@ -119,6 +119,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onDelete }) => {
       </Dialog>
     </Card>
   );
-};
+});
 
 export default PostCard;
