@@ -4,6 +4,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { registerUser } from '../../services/UserService';
 import styles from './RegisterForm.module.css';
 
@@ -23,6 +24,7 @@ const PASSWORD_MIN_LENGTH = 6;
 
 export default function RegisterForm({ setMessage }: RegisterFormProps) {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
 
   const {
@@ -51,7 +53,9 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
     try {
       const res = await registerUser(formDataToSend);
       setMessage(res.status === 201 ? `Your account has been created.` : `Account already exists!`);
-      navigate('/');
+      const response = await login({ email: formData.email, password: formData.password });
+      if (response.status === 200) navigate('/');
+      else console.error('Error logging in user:', response);
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.status === 409) {
         setMessage('Account already exists');
