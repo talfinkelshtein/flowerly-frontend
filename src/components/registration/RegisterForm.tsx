@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { registerUser } from '../../services/UserService';
-import './RegisterForm.css';
+import styles from './RegisterForm.module.css';
 
 interface FormData {
   email: string;
@@ -84,9 +84,9 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="register-form">
-      <Box className="profile-picture-container">
-        <div className="avatar-container">
+    <form onSubmit={handleSubmit(onFormSubmit)} className={styles.registerForm}>
+      <Box className={styles.profilePictureContainer}>
+        <div className={styles.avatarContainer}>
           <Avatar
             src={profilePreview || undefined}
             sx={{
@@ -97,7 +97,7 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
             }}
           />
           <IconButton
-            className="edit-icon"
+            className={styles.editIcon}
             component="label"
             sx={{
               position: 'absolute',
@@ -161,7 +161,7 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
         Register
       </Button>
 
-      <div className="google-login-container">
+      <div className={styles.googleLoginContainer}>
         <GoogleLogin onSuccess={onGoogleSuccess} onError={googleErrorMessage} />
       </div>
     </form>

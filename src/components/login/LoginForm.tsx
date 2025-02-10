@@ -3,7 +3,7 @@ import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import './LoginForm.css';
+import styles from './LoginForm.module.css';
 
 interface FormData {
   email: string;
@@ -62,7 +62,7 @@ export default function LoginForm({ setMessage }: LoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="login-form">
+    <form onSubmit={handleSubmit(onFormSubmit)} className={styles.loginForm}>
       <Box mb={2}>
         <TextField
           label="Email"
@@ -89,7 +89,7 @@ export default function LoginForm({ setMessage }: LoginFormProps) {
         Login
       </Button>
 
-      <div className="google-login-container">
+      <div className={styles.googleLoginContainer}>
         <GoogleLogin onSuccess={onGoogleSuccess} onError={googleErrorMessage} />
       </div>
     </form>

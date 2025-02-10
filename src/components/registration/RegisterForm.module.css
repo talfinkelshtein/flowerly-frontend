@@ -1,26 +1,25 @@
-.register-form {
+.registerForm {
   gap: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
   max-width: 400px;
   margin: auto;
 }
 
-.profile-picture-container {
+.profilePictureContainer {
   position: relative;
   margin-bottom: 20px;
 }
 
-.avatar-container {
+.avatarContainer {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.edit-icon {
+.editIcon {
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -31,29 +30,29 @@
   cursor: pointer;
 }
 
-.register-form .MuiTextField-root,
-.register-form .MuiButton-root {
+.registerForm .MuiTextField-root,
+.registerForm .MuiButton-root {
   width: 100%;
 }
 
-.register-form .MuiTextField-root .MuiInputBase-root {
+.registerForm .MuiTextField-root .MuiInputBase-root {
   transition: all 0.3s ease-in-out;
 }
 
-.register-form .MuiTextField-root .MuiInputBase-root:hover {
+.registerForm .MuiTextField-root .MuiInputBase-root:hover {
   box-shadow: 0px 0px 8px rgba(0, 0, 255, 0.3);
 }
 
-.register-form .MuiButton-root {
+.registerForm .MuiButton-root {
   transition: all 0.3s ease-in-out;
 }
 
-.register-form .MuiButton-root:hover {
+.registerForm .MuiButton-root:hover {
   transform: scale(1.05);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.google-login-container {
+.googleLoginContainer {
   display: flex;
   justify-content: center;
   width: 100%;
@@ -61,7 +60,6 @@
   margin-top: 20px;
 }
 
-.google-login-container iframe {
+.googleLoginContainer iframe {
   min-width: 200px !important;
-  max-width: 100% !important;
 }
