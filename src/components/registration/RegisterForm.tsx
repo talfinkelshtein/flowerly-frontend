@@ -1,12 +1,11 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Avatar, Box, Button, IconButton, TextField } from '@mui/material';
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
 import { registerUser } from '../../services/UserService';
-import './RegisterForm.css';
+import styles from './RegisterForm.module.css';
 
 interface FormData {
   email: string;
@@ -23,7 +22,6 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
 
 export default function RegisterForm({ setMessage }: RegisterFormProps) {
-  const { googleLogin } = useAuth();
   const navigate = useNavigate();
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
 
@@ -46,47 +44,27 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
   };
 
   const onFormSubmit: SubmitHandler<FormData> = async (formData) => {
+    const formDataToSend = new FormData();
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('password', formData.password);
+    if (formData.profilePicture) formDataToSend.append('image', formData.profilePicture);
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('password', formData.password);
-      if (formData.profilePicture) {
-        formDataToSend.append('image', formData.profilePicture);
-      }
-
       const res = await registerUser(formDataToSend);
-      setMessage(res.status === 200 ? `Your account has been created.` : `Account already exists!`);
-    } catch (err) {
-      console.error('Registration error:', err);
-      setMessage('Registration failed');
-    }
-  };
-
-  const onGoogleSuccess = async (credentialResponse: CredentialResponse) => {
-    try {
-      const response = await googleLogin(credentialResponse);
-
-      if (response.status === 200) {
-        setMessage('Logged in via Google!');
-        navigate('/');
+      setMessage(res.status === 201 ? `Your account has been created.` : `Account already exists!`);
+      navigate('/');
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.status === 409) {
+        setMessage('Account already exists');
       } else {
-        const errorMessage = await response.json();
-        setMessage(errorMessage.message || "Couldn't login!");
+        setMessage('Registration failed');
       }
-    } catch (error) {
-      console.error('Google login error:', error);
-      setMessage('Login via Google failed');
     }
-  };
-
-  const googleErrorMessage = () => {
-    console.log('Google login error');
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="register-form">
-      <Box className="profile-picture-container">
-        <div className="avatar-container">
+    <form onSubmit={handleSubmit(onFormSubmit)} className={styles.registerForm}>
+      <Box className={styles.profilePictureContainer}>
+        <div className={styles.avatarContainer}>
           <Avatar
             src={profilePreview || undefined}
             sx={{
@@ -97,7 +75,7 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
             }}
           />
           <IconButton
-            className="edit-icon"
+            className={styles.editIcon}
             component="label"
             sx={{
               position: 'absolute',
@@ -160,10 +138,6 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
       <Button type="submit" variant="contained" color="primary">
         Register
       </Button>
-
-      <div className="google-login-container">
-        <GoogleLogin onSuccess={onGoogleSuccess} onError={googleErrorMessage} />
-      </div>
     </form>
   );
 }
