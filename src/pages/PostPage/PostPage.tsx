@@ -20,9 +20,9 @@ import { config } from '../../config';
 import useComments from '../../custom_hooks/useComments';
 import { PostService } from '../../services/PostService';
 import { getCurrentUserProfile } from '../../services/UserService';
-import { UserProfileWithoutEmail } from '../../types/AuthTypes';
 import { Post } from '../../types/Post';
 import styles from './PostPage.module.css';
+import { getAvatarUrl } from '../../utils/userUtils';
 
 const PostPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -57,9 +57,7 @@ const PostPage: React.FC = () => {
     }
   };
 
-  const getAvatarUrl = (user: UserProfileWithoutEmail) =>
-    user.profilePicture ? `${config.API_BASE_URL}${user.profilePicture}` : user.username[0].toUpperCase();
-
+ 
   if (!post) return <CircularProgress sx={{ display: 'block', margin: 'auto', mt: 4 }} />;
   if (isLoading) return <CircularProgress sx={{ display: 'block', margin: 'auto', mt: 4 }} />;
   if (error) return <Typography color="error">{error}</Typography>;
