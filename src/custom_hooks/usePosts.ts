@@ -8,7 +8,7 @@ const usePosts = (userId?: string) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [limit, setLimit] = useState<number | null>(null);
-    const [initialFetchDone, setInitialFetchDone] = useState(false); // Instead of useRef
+    const [initialFetchDone, setInitialFetchDone] = useState(false); 
     const feedRef = useRef<HTMLDivElement | null>(null);
     const { page, hasMore, setHasMore, nextPage, resetPagination } = usePagination();
 
