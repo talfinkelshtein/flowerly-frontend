@@ -1,7 +1,7 @@
 import { config } from '../config';
 import { NewPost, Post } from '../types/Post';
-import { CommentService } from './CommentService';
 import api from '../utils/axiosConfig';
+import { CommentService } from './CommentService';
 import { getUserId } from './UserService';
 
 export const PostService = {
@@ -24,10 +24,10 @@ export const PostService = {
 
   getPosts: async (userId?: string, page: number = 1, limit: number = 4): Promise<Post[]> => {
     const response = await api.get(`${config.API_BASE_URL}/posts`, {
-      params: { owner: userId, page, limit }, 
+      params: { owner: userId, page, limit },
     });
 
-    const  posts  = response.data;
+    const posts = response.data;
     const postsWithCommentsCount = await Promise.all(
       posts.map(async (post: Post) => {
         const comments = await CommentService.getCommentsByPost(post.id);
@@ -69,6 +69,11 @@ export const PostService = {
 
   toggleLike: async (postId: string): Promise<{ hasLiked: boolean; message: string; likedBy: string[] }> => {
     const response = await api.post(`${config.API_BASE_URL}/posts/${postId}/toggleLike/${getUserId()}`);
+    return response.data;
+  },
+
+  generateAiDescription: async (plantType: string): Promise<{ description: string }> => {
+    const response = await api.get(`${config.API_BASE_URL}/ai/flower-description`, { params: { plantType } });
     return response.data;
   },
 };
