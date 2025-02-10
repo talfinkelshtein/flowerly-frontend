@@ -47,6 +47,7 @@ export const PostService = {
 
   updatePost: async (postId: string, updatedPost: Partial<Post>, image?: File): Promise<Post> => {
     const formData = new FormData();
+    formData.append('userId', getUserId());
     if (image) formData.append('image', image);
     if (updatedPost.plantType) formData.append('plantType', updatedPost.plantType);
     if (updatedPost.content) formData.append('content', updatedPost.content);
@@ -59,7 +60,9 @@ export const PostService = {
   },
 
   deletePost: async (postId: string): Promise<void> => {
-    await api.delete(`${config.API_BASE_URL}/posts/${postId}`);
+    await api.delete(`${config.API_BASE_URL}/posts/${postId}`, {
+      data: { userId: getUserId() },
+    });
   },
 
   hasLiked: async (postId: string): Promise<{ hasLiked: boolean }> => {
