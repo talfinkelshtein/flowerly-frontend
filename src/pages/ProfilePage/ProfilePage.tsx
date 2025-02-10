@@ -1,6 +1,6 @@
 import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Box, Button, CircularProgress, Container, IconButton, TextField, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Feed from "../../components/Feed/Feed";
 import { useAuth } from "../../contexts/AuthContext";
 import { getCurrentUserProfile, updateUserProfile } from "../../services/UserService";
@@ -17,6 +17,9 @@ const ProfilePage: React.FC = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const userId = localStorage.getItem("userId") || undefined;
 
+  const reloadPostsRef = useRef<(() => void) | null>(null);
+
+  
   useEffect(() => {
     if (!userToken || !userId) return;
 
@@ -59,6 +62,8 @@ const ProfilePage: React.FC = () => {
       setProfile(updatedProfile);
       setPreview(null);
       setNewImage(null);
+      reloadPostsRef.current?.();
+
     } catch (error) {
       console.error('Failed to update profile:', error);
     }
@@ -70,7 +75,6 @@ const ProfilePage: React.FC = () => {
   return (
     <Container className={styles.profileContainer}>
       <Typography variant="h4" className={styles.title}>My Profile</Typography>
-
       <div className={styles.profileInfo}>
         <Box display="flex" alignItems="center">
           <Box flex="1">
@@ -140,7 +144,7 @@ const ProfilePage: React.FC = () => {
       </div>
 
       <Typography variant="h5" className={styles.feedTitle}>My Posts</Typography>
-      <Feed userId={userId} />
+      <Feed userId={userId} setReloadRef={(ref) => (reloadPostsRef.current = ref)} />
     </Container>
   );
 };

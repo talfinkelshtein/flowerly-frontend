@@ -39,7 +39,7 @@ const usePosts = (userId?: string) => {
 
         setIsLoading(true);
         try {
-            const newPosts = await PostService.getPosts(userId, page, limit);
+            const newPosts = await PostService.getPosts(userId, page, limit ?? undefined);
             setPosts((prev) => {
                 const postIds = new Set(prev.map((p) => p.id));
                 return [...prev, ...newPosts.filter((p) => !postIds.has(p.id))];
@@ -54,6 +54,24 @@ const usePosts = (userId?: string) => {
         }
     }, [userId, page, limit, hasMore]);
 
+    const reloadPosts = useCallback(async () => {
+        setError(null); 
+        resetPagination(); 
+        setInitialFetchDone(false); 
+    
+        try {
+            setIsLoading(true);
+            const newPosts = await PostService.getPosts(userId, 1, limit ?? undefined); 
+            setPosts(newPosts);
+            setHasMore(newPosts.length === limit);
+        } catch (error) {
+            setError("Failed to load posts");
+            console.error("Error fetching posts:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [resetPagination, userId, limit, setHasMore]);
+    
     useEffect(() => {
         if (limit !== null && (!initialFetchDone || page > 1)) {
             setInitialFetchDone(true);
@@ -65,7 +83,7 @@ const usePosts = (userId?: string) => {
         if (!isLoading && hasMore) nextPage();
     }, [isLoading, hasMore, nextPage]);
 
-    return { posts, setPosts, isLoading, error, fetchMorePosts, hasMore, feedRef };
+    return { posts, setPosts, isLoading, error, fetchMorePosts, hasMore, feedRef, reloadPosts };
 };
 
 export default usePosts;
