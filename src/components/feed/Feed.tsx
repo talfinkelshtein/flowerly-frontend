@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useEffect } from "react";
 import usePosts from "../../custom_hooks/usePosts";
 import PostCard from "../PostCard/PostCard";
 import styles from "./Feed.module.css";
@@ -6,10 +6,11 @@ import { Post } from "../../types/Post";
 
 interface FeedProps {
     userId?: string; 
+    setReloadRef?: (reloadFunction: () => void) => void; // Step 1: Accept the prop
 }
 
-const Feed: React.FC<FeedProps> = ({ userId }) => {
-    const { posts, setPosts, isLoading, error, fetchMorePosts, hasMore, feedRef } = usePosts(userId);
+const Feed: React.FC<FeedProps> = ({ userId, setReloadRef  }) => {
+    const { posts, setPosts, isLoading, error, fetchMorePosts, hasMore, feedRef, reloadPosts  } = usePosts(userId);
     const observerRef = useRef<IntersectionObserver | null>(null);
 
     const lastPostRef = useCallback(
@@ -32,6 +33,12 @@ const Feed: React.FC<FeedProps> = ({ userId }) => {
     const handleDelete = (postId: string) => {
         setPosts((prev) => prev.filter((post) => post.id !== postId));
     };
+
+    useEffect(() => {
+        if (setReloadRef) {
+            setReloadRef(reloadPosts); // Step 3: Pass reloadPosts to ProfilePage
+        }
+    }, [setReloadRef, reloadPosts]);
 
     return (
         <div ref={feedRef} className={styles.feedContainer}>
