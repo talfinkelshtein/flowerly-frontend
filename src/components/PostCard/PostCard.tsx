@@ -100,7 +100,7 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onDelete }, 
             <MoreVertIcon />
           </IconButton>
           <Menu
-            onClick={(event) => event.stopPropagation()} // Prevents Card click from triggering
+            onClick={(event) => event.stopPropagation()}  
             anchorEl={menuAnchor}
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
