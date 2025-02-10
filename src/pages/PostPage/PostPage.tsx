@@ -100,7 +100,7 @@ const PostPage: React.FC = () => {
             comments.map((comment) => (
               <React.Fragment key={comment.id}>
                 <ListItem alignItems="flex-start">
-                  <Avatar src={getAvatarUrl(post.owner)} className={styles.avatar}></Avatar>
+                  <Avatar src={getAvatarUrl(comment.owner)} className={styles.avatar}></Avatar>
                   <ListItemText
                     primary={
                       <Typography variant="subtitle2" className={styles.commentOwner}>

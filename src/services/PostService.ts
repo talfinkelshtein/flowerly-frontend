@@ -1,7 +1,6 @@
 import { config } from '../config';
 import { NewPost, Post } from '../types/Post';
 import api from '../utils/axiosConfig';
-import { CommentService } from './CommentService';
 import { getUserId } from './UserService';
 
 export const PostService = {
@@ -27,17 +26,7 @@ export const PostService = {
       params: { owner: userId, page, limit },
     });
 
-    const posts = response.data;
-    const postsWithCommentsCount = await Promise.all(
-      posts.map(async (post: Post) => {
-        const comments = await CommentService.getCommentsByPost(post.id);
-        return { ...post, commentsCount: comments.length };
-      })
-    );
-
-    console.log(postsWithCommentsCount);
-
-    return postsWithCommentsCount;
+    return response.data;;
   },
 
   getPostById: async (postId: string): Promise<Post> => {
