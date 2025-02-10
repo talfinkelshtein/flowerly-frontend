@@ -2,6 +2,9 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { Box, Button, CardMedia, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import ErrorMessageSnackBar from '../../components/errorMessageSnackBar/errorMessageSnackBar';
 import { config } from '../../config';
 import { PostService } from '../../services/PostService';
@@ -10,12 +13,17 @@ import styles from './EditPostPage.module.css';
 
 const exampleFlowers = ['Rose', 'Sunflower', 'Tulip', 'Daisy', 'Lavender', 'Orchid', 'Lily', 'Peony', 'Marigold', 'Jasmine'];
 
+const editPostSchema = z.object({
+  content: z.string().min(1, "Content cannot be empty"),
+  plantType: z.string(),
+  image: z.instanceof(File).optional(),
+});
+
+type EditPostFormData = z.infer<typeof editPostSchema>;
+
 const EditPostPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<Post | null>(null);
-  const [content, setContent] = useState('');
-  const [plantType, setPlantType] = useState('Rose');
-  const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [aiLoading, setAiLoading] = useState(false);
@@ -23,13 +31,23 @@ const EditPostPage: React.FC = () => {
   const [actionError, setActionError] = useState<unknown>(null);
   const navigate = useNavigate();
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch, 
+    formState: { errors },
+  } = useForm<EditPostFormData>({
+    resolver: zodResolver(editPostSchema),
+  });
+  
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const postData = await PostService.getPostById(postId!);
         setPost(postData);
-        setContent(postData.content);
-        setPlantType(postData.plantType);
+        setValue("content", postData.content);
+        setValue("plantType", postData.plantType);
         setImagePreview(`${config.API_BASE_URL}${postData.imagePath}`);
       } catch (error) {
         console.error('Failed to load post:', error);
@@ -38,17 +56,17 @@ const EditPostPage: React.FC = () => {
       }
     };
     fetchPost();
-  }, [postId]);
+  }, [postId, setValue]);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
+      setValue("image", event.target.files[0]);
+      setImagePreview(URL.createObjectURL(event.target.files[0]));
     }
   };
 
   const fetchAIContent = async () => {
+    const plantType = watch("plantType");
     if (!plantType) {
       alert('Please select a plant type first.');
       return;
@@ -57,7 +75,7 @@ const EditPostPage: React.FC = () => {
     setAiLoading(true);
     try {
       const response = await PostService.generateAiDescription(plantType);
-      setContent(response.description);
+      setValue("content", response.description);
     } catch (error) {
       console.error('Failed to generate AI content:', error);
       alert('Failed to generate AI content.');
@@ -66,10 +84,9 @@ const EditPostPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const onSubmit = async (formData: EditPostFormData) => {
     try {
-      await PostService.updatePost(postId!, { content, plantType }, image || undefined);
+      await PostService.updatePost(postId!, { content: formData.content, plantType: formData.plantType }, formData.image || undefined);
       navigate('/');
     } catch (err) {
       console.error('Failed to update post:', err);
@@ -89,10 +106,10 @@ const EditPostPage: React.FC = () => {
 
       {imagePreview && <CardMedia component="img" height="300" image={imagePreview} alt="Post Preview" sx={{ borderRadius: '8px', mb: 2 }} />}
 
-      <form onSubmit={handleSubmit} className={styles.editPostForm}>
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.editPostForm}>
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel id="plant-type-label">Plant Type</InputLabel>
-          <Select labelId="plant-type-label" value={plantType} onChange={(e) => setPlantType(e.target.value)} label="Plant Type">
+          <Select labelId="plant-type-label" {...register("plantType")} defaultValue={post.plantType}>
             {exampleFlowers.map((flower) => (
               <MenuItem key={flower} value={flower}>
                 {flower}
@@ -108,8 +125,9 @@ const EditPostPage: React.FC = () => {
             fullWidth
             multiline
             rows={2}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            {...register("content")}
+            error={!!errors.content}
+            helperText={errors.content?.message}
             sx={{ resize: 'vertical' }}
           />
           <Button variant="contained" color="primary" onClick={fetchAIContent} disabled={aiLoading}>
