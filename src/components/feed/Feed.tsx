@@ -6,7 +6,7 @@ import { Post } from "../../types/Post";
 
 interface FeedProps {
     userId?: string; 
-    setReloadRef?: (reloadFunction: () => void) => void; // Step 1: Accept the prop
+    setReloadRef?: (reloadFunction: () => void) => void; 
 }
 
 const Feed: React.FC<FeedProps> = ({ userId, setReloadRef  }) => {
@@ -36,7 +36,7 @@ const Feed: React.FC<FeedProps> = ({ userId, setReloadRef  }) => {
 
     useEffect(() => {
         if (setReloadRef) {
-            setReloadRef(reloadPosts); // Step 3: Pass reloadPosts to ProfilePage
+            setReloadRef(reloadPosts);
         }
     }, [setReloadRef, reloadPosts]);
 
