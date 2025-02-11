@@ -18,6 +18,6 @@ export interface UserProfileServerResponse {
   refreshToken?: string[];
 }
 
-export type UserProfile = Omit<UserProfileServerResponse, '_id' | 'refreshToken' | 'password'>;
+export type UserProfile = Omit<UserProfileServerResponse, 'refreshToken' | 'password'>;
 
 export type UserProfileWithoutEmail = Omit<UserProfile, 'email'>;

@@ -1,7 +1,7 @@
 .feedContainer {
     width: 100%;
     margin-top: 20px;
-    padding: 0 20px;  
+    padding: 0 20px;
 }
 
 .feedTitle {
@@ -15,26 +15,24 @@
 
 .postsFlexbox {
     display: flex;
-    flex-wrap: wrap;  
-    gap: 20px;  
-    justify-content: flex-start;  
+    flex-wrap: wrap; 
+    gap: 20px;    
+    justify-content: flex-start; 
 }
 
 .postCard {
-    width: calc(33.33% - 20px);  
-    min-width: 250px;  
-    max-width: 350px;  
+    flex: 1 1 calc(33.33% - 20px);  
     box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
     .postCard {
-        width: calc(50% - 20px);  
+        flex: 1 1 calc(50% - 20px);  
     }
 }
 
 @media (max-width: 480px) {
     .postCard {
-        width: 100%;  
+        flex: 1 1 100%; 
     }
 }

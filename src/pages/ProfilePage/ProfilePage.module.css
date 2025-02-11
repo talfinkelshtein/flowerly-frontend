@@ -2,9 +2,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px;
-    max-width: 700px;
-    margin: auto;
+    justify-content: center;
+    padding: 0px !important;
+    margin: 0 !important;
     background: white;
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
@@ -29,20 +29,20 @@
 }
 
 .avatarContainer {
-    position: relative; 
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 200px;
-    width: 200px;   
+    width: 200px;
     margin-left: 10px;
     margin-right: 10px;
 }
 
 .editIcon {
-    position: absolute; 
-    bottom: 0;           
-    right: 0;            
+    position: absolute;
+    bottom: 0;
+    right: 0;
     background: #ffffff;
     border-radius: 50%;
     padding: 8px;
@@ -68,15 +68,14 @@
 .saveButton {
     margin-top: 20px;
     width: 40%;
-    height: 40px; 
-    font-size: 16px; 
+    height: 40px;
+    font-size: 16px;
     font-weight: 700;
-    border-radius: 8px; 
+    border-radius: 8px;
     background-color: #4caf50;
     color: white;
     transition: background-color 0.3s ease;
-    margin: 0 auto; 
-
+    margin: 0 auto;
     display: block;
 }
 
@@ -100,6 +99,6 @@
     font-size: 22px;
     font-weight: 600;
     color: #333;
-    text-align: left;
+    text-align: center; 
     width: 100%;
 }

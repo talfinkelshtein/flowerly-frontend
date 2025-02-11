@@ -1,10 +1,9 @@
-/* .home-container {
+.homeContainer {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: stretch; 
     min-height: 100vh;
     padding: 0;
     box-sizing: border-box;
     background-color: #f9f9f9;
-} */
+}

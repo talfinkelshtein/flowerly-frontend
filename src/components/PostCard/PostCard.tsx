@@ -28,6 +28,9 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onDelete }, 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [actionError, setActionError] = useState<unknown>(null);
 
+  const loggedInUserId = getUserId(); 
+  const isOwner = loggedInUserId === post.owner._id; 
+
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuAnchor(event.currentTarget);
   };
@@ -51,14 +54,12 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onDelete }, 
   const handleToggleLike = useCallback(async () => {
     try {
       const response = await PostService.toggleLike(post.id);
-      const userId = getUserId();
-      const hasLiked = response.likedBy.includes(userId);
-      setHasLiked(hasLiked);
+      setHasLiked(response.likedBy.includes(loggedInUserId));
       numberOfLikesRef.current = response.likedBy.length;
     } catch (error) {
       console.error('Failed to toggle like:', error);
     }
-  }, [post]);
+  }, [post.id, loggedInUserId]);
 
   useEffect(() => {
     const checkLikedStatus = async () => {
@@ -80,59 +81,69 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onDelete }, 
     <>
       <Card className={styles.postCard} onClick={handleCardClick} ref={ref} style={{ cursor: 'pointer' }}>
         <CardContent className={styles.postHeader}>
-        <div className={styles.usernameAndAvatar}>
-      <Avatar
-        src={post.owner.profilePicture ? `${config.API_BASE_URL}${post.owner.profilePicture}` : ''}
-        alt={post.owner.username}
-        sx={{ width: 30, height: 30 }} 
-      />
-      <Typography variant="subtitle2" className={styles.owner}>
-        {post.owner.username}
-      </Typography>
-    </div>
-          <IconButton
-            onClick={(clickEvent) => {
-              clickEvent.stopPropagation();
-              handleMenuOpen(clickEvent);
-            }}
-            className={styles.menuButton}
-          >
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            onClick={(event) => event.stopPropagation()}  
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              component={Link}
-              to={`/edit/${post.id}`}
+          <div className={styles.usernameAndAvatar}>
+            <Avatar
+              src={post.owner.profilePicture ? `${config.API_BASE_URL}${post.owner.profilePicture}` : ''}
+              alt={post.owner.username}
+              sx={{ width: 30, height: 30 }}
+            />
+            <Typography variant="subtitle2" className={styles.owner}>
+              {post.owner.username}
+            </Typography>
+          </div>
+
+          {isOwner && (
+            <IconButton
               onClick={(clickEvent) => {
                 clickEvent.stopPropagation();
-                handleMenuClose();
+                handleMenuOpen(clickEvent);
               }}
+              className={styles.menuButton}
             >
-              <EditIcon fontSize="small" sx={{ mr: 1 }} /> Edit
-            </MenuItem>
-            <MenuItem
-              onClick={(clickEvent) => {
-                clickEvent.stopPropagation();
-                handleMenuClose();
-                setConfirmOpen(true);
-              }}
+              <MoreVertIcon />
+            </IconButton>
+          )}
+
+          {isOwner && (
+            <Menu
+              onClick={(event) => event.stopPropagation()}
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
             >
-              <DeleteIcon fontSize="small" sx={{ mr: 1, color: 'red' }} /> Delete
-            </MenuItem>
-          </Menu>
+              <MenuItem
+                component={Link}
+                to={`/edit/${post.id}`}
+                onClick={(clickEvent) => {
+                  clickEvent.stopPropagation();
+                  handleMenuClose();
+                }}
+              >
+                <EditIcon fontSize="small" sx={{ mr: 1 }} /> Edit
+              </MenuItem>
+              <MenuItem
+                onClick={(clickEvent) => {
+                  clickEvent.stopPropagation();
+                  handleMenuClose();
+                  setConfirmOpen(true);
+                }}
+              >
+                <DeleteIcon fontSize="small" sx={{ mr: 1, color: 'red' }} /> Delete
+              </MenuItem>
+            </Menu>
+          )}
         </CardContent>
 
-        <CardMedia component="img" height="200" image={`${config.API_BASE_URL}${post.imagePath}`} alt="Post Image" className={styles.postImage} />
+        <CardMedia
+          component="img"
+          height="200"
+          image={`${config.API_BASE_URL}${post.imagePath}`}
+          alt="Post Image"
+          className={styles.postImage}
+        />
 
         <CardContent className={styles.postContent}>
-          <Typography variant="subtitle1" className={styles.plantType}>
-            {post.plantType}
-          </Typography>
+          <Typography variant="subtitle1" className={styles.plantType}>{post.plantType}</Typography>
           <Typography className={styles.postDescription}>{post.content}</Typography>
         </CardContent>
 
@@ -146,10 +157,9 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onDelete }, 
             sx={{ color: hasLiked ? 'red' : 'grey' }}
           >
             {hasLiked ? <FavoriteIcon fontSize="small" /> : <FavoriteBorderIcon fontSize="small" />}
-            <Typography variant="body2" sx={{ ml: 0.5 }}>
-              {numberOfLikesRef.current}
-            </Typography>
+            <Typography variant="body2" sx={{ ml: 0.5 }}>{numberOfLikesRef.current}</Typography>
           </IconButton>
+
           <IconButton
             className={styles.commentButton}
             component={Link}
