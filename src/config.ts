@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000"; 
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL as string;
 
 const POSTS_BASE = `${API_BASE_URL}/posts`;
 const COMMENTS_BASE = `${API_BASE_URL}/comments`;
@@ -18,7 +18,7 @@ export const config = {
     USER_PROFILE: (userId: string) => `${USERS_BASE}/${userId}`,
 
     POSTS: POSTS_BASE,
-    UPLOAD_IMAGE: POSTS_BASE, 
+    UPLOAD_IMAGE: POSTS_BASE,
     POST_BY_ID: (postId: string) => `${POSTS_BASE}/${postId}`,
     POST_LIKED: (postId: string, userId: string) => `${POSTS_BASE}/${postId}/hasLiked/${userId}`,
     POST_TOGGLE_LIKE: (postId: string, userId: string) => `${POSTS_BASE}/${postId}/toggleLike/${userId}`,

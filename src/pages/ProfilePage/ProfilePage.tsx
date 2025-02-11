@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Feed from "../../components/Feed/Feed";
+import Feed from "../../components/feed/Feed";
 import { useAuth } from "../../contexts/AuthContext";
 import { getCurrentUserProfile, updateUserProfile } from "../../services/UserService";
 import { UserProfile } from "../../types/AuthTypes";
