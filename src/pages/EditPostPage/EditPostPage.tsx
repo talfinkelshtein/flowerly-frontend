@@ -148,8 +148,8 @@ const EditPostPage: React.FC = () => {
             ) : (
               plants.map((plant) => (
                 <MenuItem key={plant.id} value={plant.name}>
-                  {plant.name} ({plant.scientific_name})
-                </MenuItem>
+                      {plant.name} ({plant.scientificName}) {plant.familyCommonName ? `- ${plant.familyCommonName}` : ""}{" "}
+                      </MenuItem>
               ))
             )}
           </Select>

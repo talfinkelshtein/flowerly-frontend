@@ -4,10 +4,10 @@ import { PlantService } from "../services/PlantService";
 interface Plant {
   id: number;
   name: string;
-  scientific_name: string;
-  image_url?: string | null;
+  scientificName: string;
+  familyCommonName?: string;
+  imageUrl?: string | null;
 }
-
 export const usePlants = () => {
   const [plants, setPlants] = useState<Plant[]>([]);
   const [loading, setLoading] = useState(true);
