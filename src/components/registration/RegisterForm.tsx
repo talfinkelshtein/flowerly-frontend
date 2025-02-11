@@ -3,24 +3,33 @@ import { Avatar, Box, Button, IconButton, TextField } from '@mui/material';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { registerUser } from '../../services/UserService';
 import styles from './RegisterForm.module.css';
 
-interface FormData {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  profilePicture?: File;
-}
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PASSWORD_MIN_LENGTH = 6;
+
+const registerSchema = z
+  .object({
+    email: z.string().min(1, 'Email is required').regex(EMAIL_PATTERN, 'Invalid email format'),
+    password: z.string().min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters`),
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    profilePicture: z.instanceof(File).optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+type FormData = z.infer<typeof registerSchema>;
 
 interface RegisterFormProps {
   setMessage: (message: string | null) => void;
 }
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PASSWORD_MIN_LENGTH = 6;
 
 export default function RegisterForm({ setMessage }: RegisterFormProps) {
   const navigate = useNavigate();
@@ -30,10 +39,11 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.[0]) {
@@ -57,7 +67,7 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
       if (response.status === 200) navigate('/');
       else console.error('Error logging in user:', response);
     } catch (err: unknown) {
-      if (axios.isAxiosError(err) && err.status === 409) {
+      if (axios.isAxiosError(err) && err.response?.status === 409) {
         setMessage('Account already exists');
       } else {
         setMessage('Registration failed');
@@ -72,9 +82,9 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
           <Avatar
             src={profilePreview || undefined}
             sx={{
-              width: 150, // Increased width
-              height: 150, // Increased height
-              border: '3px solid #007bff', // Blue border
+              width: 150,
+              height: 150,
+              border: '3px solid #007bff',
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
             }}
           />
@@ -101,10 +111,7 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
         <TextField
           label="Email"
           type="email"
-          {...register('email', {
-            required: 'Email is required',
-            pattern: { value: EMAIL_PATTERN, message: 'Invalid email format' },
-          })}
+          {...register('email')}
           error={!!errors.email}
           helperText={errors.email?.message}
         />
@@ -114,13 +121,7 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
         <TextField
           label="Password"
           type="password"
-          {...register('password', {
-            required: 'Password is required',
-            minLength: {
-              value: PASSWORD_MIN_LENGTH,
-              message: `Password must be at least ${PASSWORD_MIN_LENGTH} characters`,
-            },
-          })}
+          {...register('password')}
           error={!!errors.password}
           helperText={errors.password?.message}
         />
@@ -130,10 +131,7 @@ export default function RegisterForm({ setMessage }: RegisterFormProps) {
         <TextField
           label="Confirm Password"
           type="password"
-          {...register('confirmPassword', {
-            required: 'Please confirm your password',
-            validate: (value) => value === watch('password') || 'Passwords do not match',
-          })}
+          {...register('confirmPassword')}
           error={!!errors.confirmPassword}
           helperText={errors.confirmPassword?.message}
         />
