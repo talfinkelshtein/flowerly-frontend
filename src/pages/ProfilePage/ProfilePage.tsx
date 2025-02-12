@@ -4,12 +4,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Feed from "../../components/feed/Feed";
 import { useAuth } from "../../contexts/AuthContext";
 import { getCurrentUserProfile, updateUserProfile } from "../../services/UserService";
 import { UserProfile } from "../../types/AuthTypes";
 import { getAvatarUrl } from "../../utils/userUtils";
 import styles from "./ProfilePage.module.css";
+import Feed from "../../components/Feed/Feed";
 
 const profileSchema = z.object({
   username: z

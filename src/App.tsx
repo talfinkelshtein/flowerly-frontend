@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import PostPage from './pages/PostPage/PostPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import UploadPostPage from './pages/UploadPostPage/UploadPostPage';
-import Navbar from './components/NavBar/Navbar';
+import Navbar from './components/Navbar/Navbar';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 
 const App: React.FC = () => {
